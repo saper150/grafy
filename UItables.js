@@ -7,9 +7,14 @@ module.exports = class UItable {
         this.hot = null
     }
     createTable() {
+        if (document.getElementById('AdjTable').style.display === 'none') {
+            document.getElementById('AdjTable').style.display = 'block'
+            return
+        }
         if (this.hot != null) {
             return
         }
+
         this.container = document.getElementById(this.elementID)
         this.hot = new Handsontable(this.container, {
             data: this.data,
@@ -26,11 +31,8 @@ module.exports = class UItable {
         Handsontable.hooks.add('beforeChange', this.beforeTableChanged, this.hot)
     }
 
-    deleteTable() {
-        if (this.hot != null) {
-            this.hot.destroy()
-            this.hot = null
-        }
+    hideTable() {
+        document.getElementById('AdjTable').style.display = 'none'
     }
     tableChanged(changes, source) {
         //changes[0]: [0] row | [1] col | [2] before | [3] after
@@ -42,7 +44,7 @@ module.exports = class UItable {
     }
 
     beforeTableChanged(changes, source) {
-        if (changes[0][0] == changes[0][1]) {
+        if (changes[0][0] === changes[0][1]) {
             return false
         }
     }

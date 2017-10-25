@@ -2,10 +2,10 @@
 const Graph = require('./graph.js')
 const UItable = require('./UItables.js')
 require('handsontable/dist/handsontable.full.css')
-
+require('./sketch.js')
 let table, graph
 graph = Graph.random(8, 0.5)
 console.log(graph)
 table = new UItable('AdjTable', graph.mat)
 document.getElementById('buttonCreateAdjTable').onclick = () => table.createTable()
-document.getElementById('buttonDeleteAdjTable').onclick = () => table.deleteTable()
+document.getElementById('buttonDeleteAdjTable').onclick = () => table.hideTable()
