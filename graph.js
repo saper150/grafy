@@ -1,3 +1,3 @@
 module.exports.graph = () => {
-    return "new graph"
+    return "New"
 }
