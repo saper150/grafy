@@ -23,8 +23,10 @@
     "webpack-dev-server": "^2.9.3"
   },
   "dependencies": {
+    "box2dweb": "^2.1.0-b",
     "css-loader": "^0.28.7",
     "handsontable": "^0.34.5",
+    "p5": "^0.5.16",
     "style-loader": "^0.19.0"
   }
 }
