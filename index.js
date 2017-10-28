@@ -2,7 +2,6 @@
 const Graph = require('./graph.js')
 const UItable = require('./UItables.js')
 // global.box2d = require('box2dweb-commonjs')
-const circle = require('./circle.js')
 require('handsontable/dist/handsontable.full.css')
 require('./sketch.js')
 let table, graph
@@ -13,17 +12,22 @@ document.getElementById('buttonCreateAdjTable').onclick = () => table.createTabl
 document.getElementById('buttonDeleteAdjTable').onclick = () => table.hideTable()
 
 let Box2D = require('box2dweb')
-console.log(Box2D)
-let gravity = new Box2D.Common.Math.b2Vec2(0,-10)
-console.log(gravity)
+let gravity = new Box2D.Common.Math.b2Vec2(0,-100)
 
 //TODO: find a way to send world to p5 draw()
 global.world = new Box2D.Dynamics.b2World(gravity)
-console.log(world)
-let worldElement = require('./worldElement.js')
-console.log(worldElement)
+const circle = require('./worldElements/circle.js')
 let elements = []
-elements.push(new circle(world, [1,1], Box2D.Collision.Shapes.b2CircleShape))
-elements.push(new circle(world, [50,1]))
-elements.push(new circle(world, [-100,1]))
+for(let i = -50; i < 50; i+=20){
+    for(let j = 20; j<200;j+=20 )
+    elements.push(new circle(world, [i, j], 10))
+}
+elements.push(new circle(world, [1,1], 10))
+elements.push(new circle(world, [50,1], 10))
+elements.push(new circle(world, [-100,1], 10))
+
+let rectangle = require('./worldElements/rectangle')
+elements.push(new rectangle(world, [0,-100], true))
+
+
 console.log(world)
