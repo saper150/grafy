@@ -1,8 +1,7 @@
+require('handsontable/dist/handsontable.full.css')
 //const { Graph } = require('./graph.js')
 const Graph = require('./graph.js')
 const UItable = require('./UItables.js')
-// global.box2d = require('box2dweb-commonjs')
-require('handsontable/dist/handsontable.full.css')
 require('./sketch.js')
 let table, graph
 graph = Graph.random(8, 0.5)
@@ -11,23 +10,57 @@ table = new UItable('AdjTable', graph.mat)
 document.getElementById('buttonCreateAdjTable').onclick = () => table.createTable()
 document.getElementById('buttonDeleteAdjTable').onclick = () => table.hideTable()
 
-let Box2D = require('box2dweb')
-let gravity = new Box2D.Common.Math.b2Vec2(0,-100)
 
-//TODO: find a way to send world to p5 draw()
-global.world = new Box2D.Dynamics.b2World(gravity)
-const circle = require('./worldElements/circle.js')
-let elements = []
-for(let i = -50; i < 50; i+=20){
-    for(let j = 20; j<200;j+=20 )
-    elements.push(new circle(world, [i, j], 10))
-}
-elements.push(new circle(world, [1,1], 10))
-elements.push(new circle(world, [50,1], 10))
-elements.push(new circle(world, [-100,1], 10))
+window.world = new b2World(new b2Vec2(0, -10))
 
-let rectangle = require('./worldElements/rectangle')
-elements.push(new rectangle(world, [0,-100], true))
+const bodyDef = new b2BodyDef();
+const ground = world.CreateBody(bodyDef);
+
+const chainShape = new b2ChainShape();
+chainShape.vertices.push(new b2Vec2(-2, 0))
+chainShape.vertices.push(new b2Vec2(2, 0))
+chainShape.vertices.push(new b2Vec2(2, 4))
+chainShape.vertices.push(new b2Vec2(-2, 4))
+
+chainShape.CreateLoop()
+ground.CreateFixtureFromShape(chainShape, 0)
+
+const shape = new b2PolygonShape
+shape.SetAsBoxXYCenterAngle(1.5, 1, new b2Vec2(0, 1), 0)
 
 
+const bd = new b2BodyDef;
+bd.position.Set(0, 1000);
+bd.type = b2_dynamicBody;
+const body = world.CreateBody(bd);
+
+var circle = new b2CircleShape
+circle.radius = 0.1;
+body.CreateFixtureFromShape(circle, 1);
+
+
+
+const polygonShape = new b2PolygonShape
+polygonShape.SetAsBoxXYCenterAngle(1.5, 1, new b2Vec2(0, 1), 0)
+
+const psd = new b2ParticleSystemDef()
+psd.radius = 0.11
+psd.dampingStrength = 0.4
+
+const particleSystem = world.CreateParticleSystem(psd)
+
+const pd = new b2ParticleGroupDef()
+pd.shape = polygonShape;
+const group = particleSystem.CreateParticleGroup(pd)
+
+const timeStep = 1 / 60
+const velocityIterations = 5
+const positionIterations = 5
 console.log(world)
+
+    console.log(particleSystem)
+    console.log(world.particleSystems[0].GetPositionBuffer())
+    console.log(world.particleSystems[0].GetParticleCount())
+    console.log(body.GetLinearVelocity())
+    console.log(body.GetPosition())
+    console.log(group)
