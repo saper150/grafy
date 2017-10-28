@@ -44,7 +44,7 @@ const polygonShape = new b2PolygonShape
 polygonShape.SetAsBoxXYCenterAngle(1.5, 1, new b2Vec2(0, 1), 0)
 
 const psd = new b2ParticleSystemDef()
-psd.radius = 0.11
+psd.radius = 0.05
 psd.dampingStrength = 0.4
 
 const particleSystem = world.CreateParticleSystem(psd)
@@ -53,9 +53,8 @@ const pd = new b2ParticleGroupDef()
 pd.shape = polygonShape;
 const group = particleSystem.CreateParticleGroup(pd)
 
-const timeStep = 1 / 60
-const velocityIterations = 5
-const positionIterations = 5
+graph.spawn()
+
 console.log(world)
 
     console.log(particleSystem)
@@ -64,3 +63,8 @@ console.log(world)
     console.log(body.GetLinearVelocity())
     console.log(body.GetPosition())
     console.log(group)
+
+
+//radius 0.04 = 60fps (no velocity buffer)
+//radius 0.05 = 60fps (w/ velocity buffer)
+//1m == 100px 
