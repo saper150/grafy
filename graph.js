@@ -1,4 +1,4 @@
-
+let { circle, jointLine } = require('./worldElements')
 module.exports = class Graph {
     constructor(vertexCount) {
         this.mat = Array.from(Array(vertexCount).keys())
@@ -21,23 +21,24 @@ module.exports = class Graph {
     }
 
     spawn() {
-
+        let index = 0
         const circles = []
         for (let i = 0; i < Math.PI * 2; i += Math.PI * 2 / this.mat.length) {
             const x = (Math.sin(i) * 1.3) + 0
             const y = (Math.cos(i) * 1.3) + 2
-            circles.push(createCircle([x, y]))
+            circles.push(new circle([x, y], 0.1, '#ff0000', ++index))
         }
-
         for (const [a, b] of this.edges()) {
 
-            var djd = new b2DistanceJointDef;
-            djd.bodyA = circles[a];
-            djd.bodyB = circles[b];
-            djd.frequencyHz = 2;
-            djd.dampingRatio = 0.1;
-            djd.length = 1
-            world.CreateJoint(djd)
+            new jointLine([circles[a].body, circles[b].body], 2, 0.1, 1 , 0.01, '#ffffff')
+
+            // var djd = new b2DistanceJointDef;
+            // djd.bodyA = circles[a].body;
+            // djd.bodyB = circles[b].body;
+            // djd.frequencyHz = 2;
+            // djd.dampingRatio = 0.1;
+            // djd.length = 1
+            // world.CreateJoint(djd)
         }
 
     }
@@ -51,15 +52,4 @@ module.exports = class Graph {
         return result
     }
 
-}
-function createCircle([x, y]) {
-    const bd = new b2BodyDef;
-    bd.position.Set(x, y);
-    bd.type = b2_dynamicBody;
-    const body = world.CreateBody(bd);
-
-    var circle = new b2CircleShape
-    circle.radius = 0.1;
-    body.CreateFixtureFromShape(circle, 1);
-    return body
 }

@@ -5,16 +5,15 @@ module.exports = class UItable {
         this.data = data
         this.elementID = elementID
         this.hot = null
+        this.createTable()
     }
+
+
     createTable() {
-        if (document.getElementById('AdjTable').style.display === 'none') {
-            document.getElementById('AdjTable').style.display = 'block'
-            return
-        }
         if (this.hot != null) {
             return
         }
-
+        document.getElementById(this.elementID).style.display = 'none'
         this.container = document.getElementById(this.elementID)
         this.hot = new Handsontable(this.container, {
             data: this.data,
@@ -30,7 +29,12 @@ module.exports = class UItable {
         Handsontable.hooks.add('afterChange', this.tableChanged, this.hot)
         Handsontable.hooks.add('beforeChange', this.beforeTableChanged, this.hot)
     }
-
+    showTable() {
+        if (document.getElementById(this.elementID).style.display === 'none') {
+            document.getElementById(this.elementID).style.display = 'block'
+            return
+        }
+    }
     hideTable() {
         document.getElementById('AdjTable').style.display = 'none'
     }
