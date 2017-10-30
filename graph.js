@@ -25,20 +25,13 @@ module.exports = class Graph {
         const circles = []
         for (let i = 0; i < Math.PI * 2; i += Math.PI * 2 / this.mat.length) {
             const x = (Math.sin(i) * 1.3) + 0
-            const y = (Math.cos(i) * 1.3) + 2
+            const y = (Math.cos(i) * 1.3) + 0
             circles.push(new circle([x, y], 0.1, '#ff0000', ++index))
         }
         for (const [a, b] of this.edges()) {
 
             new jointLine([circles[a].body, circles[b].body], 2, 0.1, 1 , 0.01, '#ffffff')
 
-            // var djd = new b2DistanceJointDef;
-            // djd.bodyA = circles[a].body;
-            // djd.bodyB = circles[b].body;
-            // djd.frequencyHz = 2;
-            // djd.dampingRatio = 0.1;
-            // djd.length = 1
-            // world.CreateJoint(djd)
         }
 
     }
