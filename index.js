@@ -8,8 +8,10 @@ document.getElementById('buttonCreateAdjTable').onclick = () => table.showTable(
 document.getElementById('buttonDeleteAdjTable').onclick = () => table.hideTable()
 
 require('./renderer')
+const gravity = new b2Vec2(0, -10)
+window.world = new b2World(gravity)
+document.getElementById('gravity').innerHTML = `Gravity: ${gravity.x}, ${gravity.y}`
 
-window.world = new b2World(new b2Vec2(0, -10))
 window.scaleMulti = 100
 
 graph.spawn()
@@ -29,7 +31,7 @@ ground.CreateFixtureFromShape(chainShape, 0)
 
 
 const polygonShape = new b2PolygonShape
-polygonShape.SetAsBoxXYCenterAngle(0.25, 0.5, new b2Vec2(-1.5, 1), 0)
+polygonShape.SetAsBoxXYCenterAngle(0.25, 0.9, new b2Vec2(-1.5, 1), 0)
 
 const psd = new b2ParticleSystemDef()
 psd.radius = 0.03

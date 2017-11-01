@@ -7,7 +7,8 @@ class WorldElement {
         bd.type = b2_dynamicBody;
         this.body = world.CreateBody(bd);
         WorldElement.elements.push(this)
-
+        this.graphic = new PIXI.Graphics
+        WorldElement.container.addChild(this.graphic)
         //tmp
         let density = 1
         const fixture = this.body.CreateFixtureFromShape(shape, density);
@@ -18,8 +19,10 @@ class WorldElement {
         //#TODO: displaying shapes here
     }
 
+
 }
 WorldElement.elements = []
+WorldElement.container = new PIXI.Container
 
 class Circle extends WorldElement {
     constructor([x, y], radius, color, userData) {
@@ -28,10 +31,16 @@ class Circle extends WorldElement {
         super([x, y], shape, color, userData)
         this.color = color
         this.radius = radius
-        this.type = 'circle'
+
+        this.graphic.beginFill(color)
+        this.graphic.drawCircle(0, 0, radius)
+        this.graphic.endFill()
     }
 
     display() {
+        let pos = this.body.GetPosition()
+        this.graphic.position.x = pos.x
+        this.graphic.position.y = pos.y
     }
 }
 
@@ -40,7 +49,8 @@ class JointLine {
         this.bodies = [bodyA, bodyB]
         this.thickness = thickness
         this.color = color
-        this.type = 'line'
+        this.graphic = new PIXI.Graphics
+
         let djd = new b2DistanceJointDef
         djd.bodyA = bodyA
         djd.bodyB = bodyB
@@ -50,11 +60,19 @@ class JointLine {
         world.CreateJoint(djd)
 
         WorldElement.elements.push(this)
+        WorldElement.container.addChild(this.graphic)
 
     }
 
-    display() {
 
+    display() {
+        let pos = this.bodies
+        let posA = pos[0].GetPosition()
+        let posB = pos[1].GetPosition()
+        this.graphic.clear()
+        this.graphic.lineStyle(this.thickness, this.color)
+        this.graphic.moveTo(posA.x, posA.y)
+        this.graphic.lineTo(posB.x, posB.y)
     }
 }
 
