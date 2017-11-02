@@ -16,9 +16,9 @@ class WorldElement {
     }
 
     display() {
-        //#TODO: displaying shapes here
     }
 
+    
 
 }
 WorldElement.elements = []
