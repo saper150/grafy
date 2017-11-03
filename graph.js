@@ -1,5 +1,6 @@
-let { circle, jointLine, worldElement } = require('./worldElements')
-module.exports = class Graph {
+import {Circle, JointLine, WorldElement} from './worldElements'
+
+export class Graph {
     constructor(vertexCount) {
         this.mat = Array.from(Array(vertexCount).keys())
             .map(y => Array(vertexCount).fill(0))
@@ -26,11 +27,11 @@ module.exports = class Graph {
         for (let i = 0; i < Math.PI * 2; i += Math.PI * 2 / this.mat.length) {
             const x = (Math.sin(i) * 1.3) + 0
             const y = (Math.cos(i) * 1.3) + 0
-            circles.push(new circle([x, y], 0.1, 0xff0000, {index: ++index}))
+            circles.push(new Circle([x, y], 0.1, 0xff0000, {index: ++index}))
         }
         for (const [a, b] of this.edges()) {
 
-            new jointLine([circles[a].body, circles[b].body], 2, 0.1, 1 , 0.01, 0xffffff)
+            new JointLine([circles[a].body, circles[b].body], 2, 0.1, 1 , 0.01, 0xffffff)
 
         }
 

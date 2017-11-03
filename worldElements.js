@@ -1,6 +1,6 @@
-const PIXI = require('pixi.js')
+import 'pixi.js'
 
-class WorldElement {
+export class WorldElement {
     constructor([x, y], shape, color, userData) {
         const bd = new b2BodyDef;
         bd.position.Set(x, y);
@@ -15,16 +15,13 @@ class WorldElement {
         this.userData = userData
     }
 
-    display() {
-    }
-
-    
-
+    display() {    }
 }
+    
 WorldElement.elements = []
 WorldElement.container = new PIXI.Container
 
-class Circle extends WorldElement {
+export class Circle extends WorldElement {
     constructor([x, y], radius, color, userData) {
         let shape = new b2CircleShape
         shape.radius = radius;
@@ -44,7 +41,7 @@ class Circle extends WorldElement {
     }
 }
 
-class JointLine {
+export class JointLine {
     constructor([bodyA, bodyB], frequency, damping, length, thickness, color) {
         this.bodies = [bodyA, bodyB]
         this.thickness = thickness
@@ -75,8 +72,3 @@ class JointLine {
         this.graphic.lineTo(posB.x, posB.y)
     }
 }
-
-
-module.exports.worldElement = WorldElement
-module.exports.circle = Circle
-module.exports.jointLine = JointLine

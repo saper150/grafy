@@ -1,6 +1,7 @@
-const PIXI = require('pixi.js')
-const { worldElement } = require('./worldElements')
-const { spawnParticles } = require('./particles')
+import 'pixi.js'
+import {WorldElement} from './worldElements'
+import {spawnParticles} from './particles'
+
 let app = new PIXI.Application
 let renderer = PIXI.autoDetectRenderer(400, 400)
 renderer.backgroundColor = 0x666666
@@ -11,10 +12,14 @@ let button = document.getElementById('buttonAddParticles')
 let particlesOnClick = false
 button.onclick = () => {
     particlesOnClick = !particlesOnClick
-    if (particlesOnClick)
-        button.firstChild.data = 'Disable particles on click'
-    else
-        button.firstChild.data = 'Enable particles on click'
+    button.firstChild.data = getEnableDisableString(!particlesOnClick, 'particles on click')
+}
+
+function getEnableDisableString(condition, data){
+    if(condition)
+        return `Enable ${data}`
+    return `Disable ${data}`
+
 }
 
 let particleCountDiv = document.getElementById('particlesCount')
@@ -33,15 +38,16 @@ PIXI.loader
 let particlesContainer, circleTexture
 stage.position.set(renderer.width / 2, renderer.height / 2)
 stage.scale.set(100, -100)
+
 function setup() {
-    
+
     circleTexture = PIXI.loader.resources['assets/images/Circle.png'].texture
     let blurFilter = new PIXI.filters.BlurFilter
     blurFilter.blur = 3
     particleSetup([blurFilter])
     let fps = new PIXI.Text
     fpsSetup(fps)
-    stage.addChild(worldElement.container)
+    stage.addChild(WorldElement.container)
 
     //main loop
     app.ticker.add(function () {
@@ -53,16 +59,17 @@ function setup() {
         renderer.render(stage)
 
 
-        //#TODO: debugging info
+        //debugging info
         particleCountDiv.innerHTML = `Particles: ${world.particleSystems[0].GetParticleCount()}`
     })
 }
 
 function newParticles() {
     const newParticlesCount = world.particleSystems[0].GetParticleCount() / 2 - particlesContainer.children.length
-    for (var i = 0; i < newParticlesCount; i++) {
-        particlesContainer.addChild(makeSprite(circleTexture))
-    }
+    if (newParticlesCount > 0)
+        for (var i = 0; i < newParticlesCount; i++) {
+            particlesContainer.addChild(makeSprite(circleTexture))
+        }
 }
 
 function makeSprite(texture) {
@@ -94,6 +101,7 @@ function fpsSetup(fps) {
     stage.addChild(fps)
 }
 
+
 function particles() {
 
     let particlesPos = world.particleSystems[0].GetPositionBuffer()
@@ -105,32 +113,28 @@ function particles() {
     }
 }
 function displayBox2dShapes() {
-    for (let i = 0; i < worldElement.elements.length; i++) {
-        worldElement.elements[i].display()
+    for (let i = 0; i < WorldElement.elements.length; i++) {
+        WorldElement.elements[i].display()
     }
 }
 
-
-let gravity = new b2Vec2(0, -10)
+const gravityChange = [
+    { key: 38, x: 0, y: 1, dir: 'up' },
+    { key: 40, x: 0, y: -1, dir: 'down' },
+    { key: 37, x: -1, y: 0, dir: 'left' },
+    { key: 39, x: 1, y: 0, dir: 'right' }
+]
 function onKeyDown(key) {
-    if (key.keyCode === 32) {
-        gravity.y *= -1
-        gravity.x *= -1
-    }
-    if (key.keyCode === 38) {
-        gravity.y += 1
-    }
-    if (key.keyCode === 40) {
-        gravity.y -= 1
-    }
-    if (key.keyCode === 37) {
-        gravity.x -= 1
-    }
-    if (key.keyCode === 39) {
-        gravity.x += 1
-    }
-    world.SetGravity(new b2Vec2(gravity.x, gravity.y))
-    document.getElementById('gravity').innerHTML = `Gravity: ${gravity.x}, ${gravity.y}`
+    if (key.keyCode === 32)
+        world.multGravity(-1, -1)
+
+    gravityChange.forEach(function (change) {
+        if (change.key === key.keyCode) {
+            world.addToGravity(change.x, change.y)
+        }
+    });
+
+    document.getElementById('gravity').innerHTML = `Gravity: ${world.gravity.x}, ${world.gravity.y}`
 }
 
 function onMouseDown(mouse) {

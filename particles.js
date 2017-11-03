@@ -1,5 +1,4 @@
-
-function startingParticles([x, y], [width, height], radius){
+export function startingParticles([x, y], [width, height], radius){
     const polygonShape = new b2PolygonShape
     polygonShape.SetAsBoxXYCenterAngle(0.25, 0.9, new b2Vec2(-1.5, 1), 0)
     
@@ -18,7 +17,7 @@ function startingParticles([x, y], [width, height], radius){
     }
 }
 
-function spawnParticles([x, y], [width, height], radius) {
+export function spawnParticles([x, y], [width, height], radius) {
     const polygonShape = new b2PolygonShape
     polygonShape.SetAsBoxXYCenterAngle(width, height, new b2Vec2(x, y), 0)
 
@@ -30,7 +29,3 @@ function spawnParticles([x, y], [width, height], radius) {
     pd.color.Set(0, 20, 240, 255);
     const group = particleSystem.CreateParticleGroup(pd)
 }
-
-
-module.exports.spawnParticles = spawnParticles
-module.exports.startingParticles = startingParticles

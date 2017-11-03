@@ -1,6 +1,6 @@
-const Handsontable = require('handsontable/dist/handsontable.full.js')
+import Handsontable from 'handsontable/dist/handsontable.full.js'
 
-module.exports = class UItable {
+export class UItable {
     constructor(elementID, data) {
         this.data = data
         this.elementID = elementID
