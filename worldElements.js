@@ -54,13 +54,16 @@ export class JointLine {
         djd.frequencyHz = frequency
         djd.dampingRatio = damping
         djd.length = length
-        world.CreateJoint(djd)
+        this.joint = world.CreateJoint(djd)
 
         WorldElement.elements.push(this)
         WorldElement.container.addChild(this.graphic)
-
     }
 
+    destroy(){
+        world.DestroyJoint(this.joint)
+        WorldElement.container.removeChild(this.graphic)
+    }
 
     display() {
         let pos = this.bodies

@@ -1,13 +1,13 @@
 import 'handsontable/dist/handsontable.full.css'
 import {Graph} from './graph'
-import {UItable} from './UItables'
+import {GraphTable} from './UItables'
 import {spawnParticles, startingParticles} from './particles'
 import {initializeWorld, worldBounds} from './worldUtilis'
 import './renderer'
 
 let table, graph
 graph = Graph.random(8, 0.3)
-table = new UItable('AdjTable', graph.mat)
+table = new GraphTable('AdjTable', graph)
 document.getElementById('buttonCreateAdjTable').onclick = () => table.showTable()
 document.getElementById('buttonDeleteAdjTable').onclick = () => table.hideTable()
 
