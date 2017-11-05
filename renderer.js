@@ -21,6 +21,11 @@ function addParticlesOnClick(){
 }
 
 
+let g_groundBody = null
+let mouseJoint = null
+
+
+
 function stageSetup() {
     stage = new PIXI.Container
     stage.interactive = true
@@ -120,18 +125,48 @@ function onKeyDown(key) {
     htmlUtilis.setTextInDiv('gravity', `Gravity: ${world.gravity.x}, ${world.gravity.y}` )
 }
 
+function getMousePosition(mouse) { 
+    const pos = mouse.data.getLocalPosition(mouse.target)
+    return new b2Vec2(pos.x, pos.y)
+}
+
 function onMouseDown(mouse) {
+    const localPos = getMousePosition(mouse)
     if (particlesOnClick) {
-        const localPos = mouse.data.getLocalPosition(mouse.target)
-        spawnParticles([localPos.x, localPos.y], [0.25, 0.25])
+        spawnParticles([localPos.x, localPos.y], [0.25, 0.25], 0.03)
+    } else {
+        var aabb = new b2AABB;
+        aabb.lowerBound = new b2Vec2(localPos.x + 0.001, localPos.y - 0.001)
+        aabb.upperBound = new b2Vec2(localPos.x - 0.001, localPos.y + 0.001)
+
+        const callbackQuery = {
+            ReportFixture: (fixture) => {
+                var body = fixture.body;
+                var joint = new b2MouseJointDef;
+                joint.bodyA = g_groundBody;
+                joint.bodyB = body;
+                joint.target = localPos;
+                joint.maxForce = 1000 * body.GetMass();
+                mouseJoint = world.CreateJoint(joint);
+                body.SetAwake(true);
+            }
+        }
+
+        world.QueryAABB(callbackQuery, aabb);
+
     }
 }
 
-
-//temporary
-function resize(width, height) {
-    renderer.resize(width, height)
-    stage.scale.set(100 * width / 400, -100 * height / 400)
-    stage.position.set(renderer.width / 2, renderer.height / 2)
+function onMouseUp() {
+    if (mouseJoint) { 
+        world.DestroyJoint(mouseJoint)
+        mouseJoint = null
+    }
 }
-window.resize = resize
+
+function onMouseMove(event) {
+    if (mouseJoint) { 
+        mouseJoint.SetTarget(getMousePosition(event))
+    }
+}
+

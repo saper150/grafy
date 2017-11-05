@@ -37,11 +37,11 @@ export class Circle extends WorldElement {
         WorldElement.container.addChild(this.text)
         
         //#TODO: mouse joint has 1m length
-        this.mouseMoving = false
-        this.graphic.on('pointerdown', (mouse) => this.mouseDown(mouse))
-        this.graphic.on('pointerupoutside', (mouse) => this.mouseUp(mouse))
-        this.graphic.on('pointerup', (mouse) => this.mouseUp(mouse))
-        this.graphic.on('pointermove', (mouse) => this.mouseMove(mouse))
+        // this.mouseMoving = false
+        // this.graphic.on('pointerdown', (mouse) => this.mouseDown(mouse))
+        // this.graphic.on('pointerupoutside', (mouse) => this.mouseUp(mouse))
+        // this.graphic.on('pointerup', (mouse) => this.mouseUp(mouse))
+        // this.graphic.on('pointermove', (mouse) => this.mouseMove(mouse))
         this.graphic.beginFill(color)
         this.graphic.drawCircle(0, 0, 1.2*radius)
         this.graphic.endFill()
