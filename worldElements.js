@@ -15,9 +15,9 @@ export class WorldElement {
         this.userData = userData
     }
 
-    display() {    }
+    display() { }
 }
-    
+
 WorldElement.elements = []
 WorldElement.container = new PIXI.Container
 
@@ -30,19 +30,20 @@ export class Circle extends WorldElement {
         this.radius = radius
         this.graphic.interactive = true
         this.text = new PIXI.Text(this.userData.index)
-        this.text.width = 2*this.radius
-        this.text.height = 2*this.radius
-        this.text.anchor.set(0.5,0.5)
-        this.text.scale.set(this.text.scale.x,this.text.scale.y * -1)
+        this.text.width = 1.5 * this.radius
+        this.text.height = 2 * this.radius
+        this.text.anchor.set(0.5, 0.5)
+        this.text.scale.set(this.text.scale.x, this.text.scale.y * -1)
         WorldElement.container.addChild(this.text)
-        //mousejoint with 1m length?!
+        
+        //#TODO: mouse joint has 1m length
         this.mouseMoving = false
-        this.graphic.on('pointerdown', (mouse) =>this.mouseDown(mouse))
-        this.graphic.on('pointerupoutside', (mouse) =>this.mouseUp(mouse))
-        this.graphic.on('pointerup', (mouse) =>this.mouseUp(mouse))
-        this.graphic.on('pointermove', (mouse) =>this.mouseMove(mouse))
+        this.graphic.on('pointerdown', (mouse) => this.mouseDown(mouse))
+        this.graphic.on('pointerupoutside', (mouse) => this.mouseUp(mouse))
+        this.graphic.on('pointerup', (mouse) => this.mouseUp(mouse))
+        this.graphic.on('pointermove', (mouse) => this.mouseMove(mouse))
         this.graphic.beginFill(color)
-        this.graphic.drawCircle(0, 0, radius)
+        this.graphic.drawCircle(0, 0, 1.2*radius)
         this.graphic.endFill()
     }
 
@@ -53,7 +54,7 @@ export class Circle extends WorldElement {
         this.text.position.set(pos.x, pos.y)
     }
 
-    mouseDown(mouse){
+    mouseDown(mouse) {
         let md = new b2MouseJointDef
         md.bodyA = world.bodies[0]
         md.bodyB = this.body
@@ -66,16 +67,18 @@ export class Circle extends WorldElement {
         this.target = mouse.target.parent
     }
 
-    mouseMove(mouse){
-        if(this.mouseMoving){
-        let mousePos = mouse.data.getLocalPosition(this.target.parent)
-        this.mouseJoint.SetTarget(mousePos)
+    mouseMove(mouse) {
+        if (this.mouseMoving) {
+            let mousePos = mouse.data.getLocalPosition(this.target.parent)
+            this.mouseJoint.SetTarget(mousePos)
         }
     }
 
-    mouseUp(mouse){
-        this.mouseMoving = false
-        world.DestroyJoint(this.mouseJoint)
+    mouseUp(mouse) {
+        if (this.mouseMoving) {
+            this.mouseMoving = false
+            world.DestroyJoint(this.mouseJoint)
+        }
     }
 }
 
@@ -98,7 +101,7 @@ export class JointLine {
         WorldElement.container.addChild(this.graphic)
     }
 
-    destroy(){
+    destroy() {
         world.DestroyJoint(this.joint)
         WorldElement.container.removeChild(this.graphic)
     }

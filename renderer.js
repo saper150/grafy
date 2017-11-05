@@ -1,127 +1,103 @@
 import 'pixi.js'
 import { WorldElement } from './worldElements'
 import { spawnParticles } from './particles'
-
-let app = new PIXI.Application
-let renderer = PIXI.autoDetectRenderer(400, 400)
+import 'fpsmeter'
+import htmlUtilis from './htmlUtilis'
+let app, renderer, stage, meter, particlesContainer
+app = new PIXI.Application
+renderer = PIXI.autoDetectRenderer(400, 400)
 renderer.backgroundColor = 0x999999
 document.getElementById('canvas').appendChild(renderer.view)
 document.addEventListener('keydown', onKeyDown);
 
-let button = document.getElementById('buttonAddParticles')
+meter = new FPSMeter(document.getElementById('canvas'), {position: 'sticky', margin: 'inherit', width: 50, graph: 1, history: 20, heat: 1})
+
 let particlesOnClick = false
-button.onclick = () => {
+document.getElementById('buttonAddParticles').onclick = addParticlesOnClick
+
+function addParticlesOnClick(){
     particlesOnClick = !particlesOnClick
-    button.firstChild.data = getEnableDisableString(!particlesOnClick, 'particles on click')
+    this.firstChild.data = htmlUtilis.twoStateName(particlesOnClick, 'Disable', 'Enable', 'particles on click')
 }
 
-function getEnableDisableString(condition, data) {
-    if (condition)
-        return `Enable ${data}`
-    return `Disable ${data}`
 
-}
-
-let particleCountDiv = document.getElementById('particlesCount')
-
-let stage = new PIXI.Container
-stage.interactive = true
-stage.hitArea = new PIXI.Rectangle(-renderer.width, -renderer.height, 2 * renderer.width, 2 * renderer.height)
-stage.on('pointerdown', onMouseDown)
-
-
-
-function resize(width, height) {
-    renderer.resize(width, height)
-    stage.scale.set(100 * width / 400, -100 * height / 400)
+function stageSetup() {
+    stage = new PIXI.Container
+    stage.interactive = true
+    stage.hitArea = new PIXI.Rectangle(-renderer.width, -renderer.height, 2 * renderer.width, 2 * renderer.height)
+    stage.on('pointerdown', onMouseDown)
     stage.position.set(renderer.width / 2, renderer.height / 2)
+    stage.scale.set(100, -100)
 }
-window.resize = resize
+
+function makeBlur(blurStr) {
+    let blurFilter = new PIXI.filters.BlurFilter
+    blurFilter.blur = blurStr
+    return blurFilter
+}
 
 PIXI.loader
-    .add('assets/images/Circle.png')
-    .load(setup)
-
-let particlesContainer, circleTexture
-stage.position.set(renderer.width / 2, renderer.height / 2)
-stage.scale.set(100, -100)
+.add('assets/images/Circle.png')
+.load(setup)
 
 function setup() {
-
-    circleTexture = PIXI.loader.resources['assets/images/Circle.png'].texture
-    let blurFilter = new PIXI.filters.BlurFilter
-    blurFilter.blur = 3
-    particleSetup([blurFilter])
-    let fps = new PIXI.Text
-    fpsSetup(fps)
+    stageSetup()
+    particleSetup([makeBlur(3)])
     stage.addChild(WorldElement.container)
+
+    htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
 
     //main loop
     app.ticker.add(function () {
+        meter.tickStart()
         world.Step(1 / 60, 5, 5)
         particles()
-        displayBox2dShapes()
+        WorldElement.elements.map(we => we.display())
+
         newParticles()
-        fps.text = app.ticker.FPS.toFixed(0)
         renderer.render(stage)
-
-
-        //debugging info
-        particleCountDiv.innerHTML = `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`
+        meter.tick()
     })
 }
 
 function newParticles() {
-    
     const newParticlesCount = world.particleSystems[0].GetParticleCount() / 2 - particlesContainer.children.length
-    if (newParticlesCount > 0)
+    const radius = world.particleSystems[0].radius
+    if (newParticlesCount > 0) {
         for (var i = 0; i < newParticlesCount; i++) {
-            particlesContainer.addChild(makeSprite(circleTexture))
+            particlesContainer.addChild(makeSprite(2*radius, 2*radius,PIXI.loader.resources['assets/images/Circle.png'].texture))
         }
+        htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
+    }
 }
 
-function makeSprite(texture) {
-    let circle = new PIXI.Sprite(texture)
-    circle.width = 0.06
-    circle.height = 0.06
-    circle.anchor.set(0.5, 0.5)
-    circle.tint = 0x666666
-    return circle
+function makeSprite(width, height,texture) {
+    let sprite = new PIXI.Sprite(texture)
+    sprite.width = width
+    sprite.height = height
+    sprite.anchor.set(0.5, 0.5)
+    sprite.tint = 0x666666
+    return sprite
 }
 
 function particleSetup(filterArray) {
-
     particlesContainer = new PIXI.Container
-    let particleCount = world.particleSystems[0].GetParticleCount() / 2
-    for (var i = 0; i < particleCount; i++) {
-        particlesContainer.addChild(makeSprite(circleTexture))
+    const particleCount = world.particleSystems[0].GetParticleCount() / 2
+    const radius = world.particleSystems[0].radius
+    for (let i = 0; i < particleCount; i++) {
+        particlesContainer.addChild(makeSprite(2*radius, 2*radius,PIXI.loader.resources['assets/images/Circle.png'].texture))
     }
-    particlesContainer.filters = filterArray
+    if (filterArray)
+        particlesContainer.filters = filterArray
     stage.addChild(particlesContainer)
 }
 
-function fpsSetup(fps) {
-    fps.position.set(1.5, 2)
-    fps.width = 0.3
-    fps.height = 0.3
-    fps.rotation = Math.PI
-    fps.scale.x = -1
-    stage.addChild(fps)
-}
-
-
 function particles() {
-    let particlesPos = world.particleSystems[0].GetPositionBuffer()
-    let particleColor = world.particleSystems[0].GetColorBuffer()
+    const particlesPos = world.particleSystems[0].GetPositionBuffer()
+    const particleColor = world.particleSystems[0].GetColorBuffer()
     for (var i = 0; i < particlesContainer.children.length; i++) {
-        particlesContainer.children[i].x = particlesPos[2 * i]
-        particlesContainer.children[i].y = particlesPos[2 * i + 1]
+        particlesContainer.children[i].position.set(particlesPos[2 * i], particlesPos[2 * i + 1])
         particlesContainer.children[i].tint = PIXI.utils.rgb2hex([particleColor[4 * i] / 255, particleColor[4 * i + 1] / 255, particleColor[4 * i + 2] / 255])
-    }
-}
-function displayBox2dShapes() {
-    for (let i = 0; i < WorldElement.elements.length; i++) {
-        WorldElement.elements[i].display()
     }
 }
 
@@ -131,22 +107,31 @@ const gravityChange = [
     { key: 37, x: -1, y: 0, dir: 'left' },
     { key: 39, x: 1, y: 0, dir: 'right' }
 ]
+
 function onKeyDown(key) {
     if (key.keyCode === 32)
         world.multGravity(-1, -1)
 
-    gravityChange.forEach(function (change) {
+    gravityChange.forEach((change)=> {
         if (change.key === key.keyCode) {
             world.addToGravity(change.x, change.y)
         }
-    });
-
-    document.getElementById('gravity').innerHTML = `Gravity: ${world.gravity.x}, ${world.gravity.y}`
+    })
+    htmlUtilis.setTextInDiv('gravity', `Gravity: ${world.gravity.x}, ${world.gravity.y}` )
 }
 
 function onMouseDown(mouse) {
     if (particlesOnClick) {
         const localPos = mouse.data.getLocalPosition(mouse.target)
-        spawnParticles([localPos.x, localPos.y], [0.25, 0.25], 0.03)
+        spawnParticles([localPos.x, localPos.y], [0.25, 0.25])
     }
 }
+
+
+//temporary
+function resize(width, height) {
+    renderer.resize(width, height)
+    stage.scale.set(100 * width / 400, -100 * height / 400)
+    stage.position.set(renderer.width / 2, renderer.height / 2)
+}
+window.resize = resize

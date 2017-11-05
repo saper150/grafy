@@ -3,7 +3,7 @@ export function startingParticles([x, y], [width, height], radius){
     polygonShape.SetAsBoxXYCenterAngle(0.25, 0.9, new b2Vec2(-1.5, 1), 0)
     
     const psd = new b2ParticleSystemDef()
-    psd.radius = 0.03
+    psd.radius = radius
     psd.dampingStrength = 0.4
     const particleSystem = world.CreateParticleSystem(psd)
     
@@ -17,7 +17,7 @@ export function startingParticles([x, y], [width, height], radius){
     }
 }
 
-export function spawnParticles([x, y], [width, height], radius) {
+export function spawnParticles([x, y], [width, height]) {
     const polygonShape = new b2PolygonShape
     polygonShape.SetAsBoxXYCenterAngle(width, height, new b2Vec2(x, y), 0)
 
