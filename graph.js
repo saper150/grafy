@@ -28,7 +28,7 @@ export class Graph {
         for (let i = 0; i < Math.PI * 2; i += Math.PI * 2 / this.mat.length) {
             const x = (Math.sin(i) * 1.3) + 0
             const y = (Math.cos(i) * 1.3) + 0
-            this.vertices.push(new Circle([x, y], 0.1, 0xff0000, { index: ++index }))
+            this.vertices.push(new Circle([x, y], 0.14, 0xff0000, { index: ++index }))
         }
         this.createEdges(this.vertices)
     }
@@ -54,8 +54,8 @@ export class Graph {
         }
     }
 
-    recreateEdges(){
-        for(let joint of this.edgeObjects){
+    recreateEdges() {
+        for (let joint of this.edgeObjects) {
             joint.destroy()
         }
         this.edgeObjects = []
@@ -115,4 +115,21 @@ export class Graph {
         return searchTree
     }
 
+    isGraphConnected() {
+        let neighbours = new Set()
+
+        let checkVertex = (i) => {
+            for (let j = 0; j < this.mat[i].length; j++) {
+                if (this.mat[i][j] === 1) {
+                    if (!neighbours.has(j)) {
+                        neighbours.add(j)
+                        checkVertex(j)
+                    }
+                }
+            }
+        }
+        neighbours.add(0)
+        checkVertex(0)
+        return (neighbours.size === this.mat[0].length)
+    }
 }

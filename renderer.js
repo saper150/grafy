@@ -5,7 +5,7 @@ import { Graph } from "./graph";
 
 let app = new PIXI.Application
 let renderer = PIXI.autoDetectRenderer(400, 400)
-renderer.backgroundColor = 0x666666
+renderer.backgroundColor = 0x999999
 document.getElementById('canvas').appendChild(renderer.view)
 document.addEventListener('keydown', onKeyDown);
 
@@ -20,8 +20,8 @@ button.onclick = () => {
     button.firstChild.data = getEnableDisableString(!particlesOnClick, 'particles on click')
 }
 
-function getEnableDisableString(condition, data){
-    if(condition)
+function getEnableDisableString(condition, data) {
+    if (condition)
         return `Enable ${data}`
     return `Disable ${data}`
 
@@ -35,11 +35,13 @@ let stage = new PIXI.Container
 stage.interactive = true
 stage.hitArea = new PIXI.Rectangle(-renderer.width, -renderer.height, 2 * renderer.width, 2 * renderer.height)
 stage.on('pointerdown', onMouseDown)
-document.addEventListener('mouseup', onMouseUp)
-stage.on('mousemove', onMouseMove)
 
-renderer.autoResize = true
-
+function resize(width, height) {
+    renderer.resize(width, height)
+    stage.scale.set(100 * width / 400, -100 * height / 400)
+    stage.position.set(renderer.width / 2, renderer.height / 2)
+}
+window.resize = resize
 
 PIXI.loader
     .add('assets/images/Circle.png')
@@ -75,11 +77,12 @@ function setup() {
 
 
         //debugging info
-        particleCountDiv.innerHTML = `Particles: ${world.particleSystems[0].GetParticleCount()}`
+        particleCountDiv.innerHTML = `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`
     })
 }
 
 function newParticles() {
+    
     const newParticlesCount = world.particleSystems[0].GetParticleCount() / 2 - particlesContainer.children.length
     if (newParticlesCount > 0)
         for (var i = 0; i < newParticlesCount; i++) {
@@ -109,16 +112,16 @@ function particleSetup(filterArray) {
 
 function fpsSetup(fps) {
     fps.position.set(1.5, 2)
-    fps.width = 0.5
-    fps.height = 0.5
+    fps.width = 0.3
+    fps.height = 0.3
     fps.rotation = Math.PI
     fps.scale.x = -1
     stage.addChild(fps)
 }
 
 
-function drawParticles() {
 
+function particles() {
     let particlesPos = world.particleSystems[0].GetPositionBuffer()
     let particleColor = world.particleSystems[0].GetColorBuffer()
     for (var i = 0; i < particlesContainer.children.length; i++) {
