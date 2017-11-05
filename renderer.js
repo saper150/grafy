@@ -1,6 +1,7 @@
 import 'pixi.js'
 import { WorldElement } from './worldElements'
 import { spawnParticles } from './particles'
+import { Graph } from "./graph";
 
 let app = new PIXI.Application
 let renderer = PIXI.autoDetectRenderer(400, 400)
@@ -26,6 +27,8 @@ function getEnableDisableString(condition, data) {
 
 }
 
+let graph 
+
 let particleCountDiv = document.getElementById('particlesCount')
 
 let stage = new PIXI.Container
@@ -49,6 +52,10 @@ stage.position.set(renderer.width / 2, renderer.height / 2)
 stage.scale.set(100, -100)
 
 function setup() {
+
+    graph = Graph.random(8, 1).BFS()
+    graph.spawn()
+
     g_groundBody = world.CreateBody(new b2BodyDef);
     circleTexture = PIXI.loader.resources['assets/images/Circle.png'].texture
     let blurFilter = new PIXI.filters.BlurFilter
@@ -61,6 +68,7 @@ function setup() {
     //main loop
     app.ticker.add(function () {
         world.Step(1 / 60, 5, 5)
+        graph.tick()
         drawParticles()
         displayBox2dShapes()
         newParticles()
