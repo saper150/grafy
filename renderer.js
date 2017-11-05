@@ -3,9 +3,11 @@ import { WorldElement } from './worldElements'
 import { spawnParticles } from './particles'
 import 'fpsmeter'
 import htmlUtilis from './htmlUtilis'
-let app, renderer, stage, meter, particlesContainer
+let app, renderer, stage, meter, particlesContainer, graph
 app = new PIXI.Application
 renderer = PIXI.autoDetectRenderer(400, 400)
+import { Graph } from "./graph";
+
 renderer.backgroundColor = 0x999999
 document.getElementById('canvas').appendChild(renderer.view)
 document.addEventListener('keydown', onKeyDown);
@@ -48,6 +50,9 @@ PIXI.loader
 function setup() {
     stageSetup()
     particleSetup([makeBlur(3)])
+    graph = Graph.random(8, 1).BFS()
+    graph.spawn()
+    g_groundBody = world.CreateBody(new b2BodyDef);
     stage.addChild(WorldElement.container)
 
     htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
@@ -58,6 +63,7 @@ function setup() {
         world.Step(1 / 60, 5, 5)
         particles()
         WorldElement.elements.map(we => we.display())
+        graph.tick()
 
         newParticles()
         renderer.render(stage)

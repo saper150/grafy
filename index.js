@@ -25,9 +25,8 @@ document.getElementById('buttonConnectivity').onclick = () => connectivityDiv.in
 initializeWorld(0, -10)
 document.getElementById('gravity').innerHTML = `Gravity: ${world.gravity.x}, ${world.gravity.y}`
 
-
-worldBounds(-2, 2, 2, -2)
-graph.spawn()
+worldBounds(-2,2,2,-2)
 
 startingParticles([-1.5, 1], [0.25, 0.9], 0.04)
 
+// graph.spawn()

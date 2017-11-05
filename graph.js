@@ -33,6 +33,21 @@ export class Graph {
         this.createEdges(this.vertices)
     }
 
+    tick() {
+        for (const pNode of this.vertices){
+            for (const pNode2 of this.vertices) {
+                if (pNode === pNode2) continue
+                let diff = new b2Vec2
+                b2Vec2.Sub(diff, pNode.body.GetPosition(), pNode2.body.GetPosition())
+                let normalized = new b2Vec2
+                b2Vec2.Normalize(normalized,diff)
+                let final = new b2Vec2
+                b2Vec2.MulScalar(final, normalized, 0.3 / diff.LengthSquared())
+                pNode.body.ApplyForceToCenter(final)
+            }
+        }
+     }
+
     createEdges(vertices) {
         for (const [a, b] of this.edges()) {
             this.edgeObjects.push(new JointLine([vertices[a].body, vertices[b].body], 2, 0.1, 1, 0.01, 0xffffff))
@@ -47,8 +62,13 @@ export class Graph {
         this.createEdges(this.vertices)
     }
 
-
-
+    
+    neighbours(node) {
+        return this.mat[node].map((x, index) => [x, index])
+            .filter(([x]) => x)
+            .map(([x, index]) => index)
+    }
+    
     edges() {
         const result = []
         for (let i = 0; i < this.mat.length; i++) {
@@ -57,6 +77,42 @@ export class Graph {
             }
         }
         return result
+    }
+
+    //Depth-first search
+    DFS() {
+        const visited = new Set()
+        const searchTree = new Graph(this.mat.length)
+        const $inner = root => {
+            visited.add(root)
+            for (const neighbour of this.neighbours(root)) {
+                if (visited.has(neighbour)) continue
+                searchTree.addEdge(root, neighbour)
+                $inner(neighbour)
+            }
+        }
+        $inner(0)
+        return searchTree
+    }
+
+
+    BFS() {
+        const visited = new Set([0])
+        const searchTree = new Graph(this.mat.length)
+        const queue = [0]
+
+        while (queue.length) {
+            const current = queue.shift()
+            for (const neighbour of this.neighbours(current)) {
+                if (visited.has(neighbour)) {
+                    continue
+                }
+                visited.add(neighbour)
+                searchTree.addEdge(current, neighbour)
+                queue.push(neighbour)
+            }
+        }
+        return searchTree
     }
 
     isGraphConnected() {
