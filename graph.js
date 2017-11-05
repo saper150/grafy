@@ -1,5 +1,5 @@
 import { Circle, JointLine, WorldElement } from './worldElements'
-console.log(new b2Vec2)
+
 export class Graph {
     constructor(vertexCount) {
         this.mat = Array.from(Array(vertexCount).keys())
@@ -94,4 +94,25 @@ export class Graph {
         $inner(0)
         return searchTree
     }
+
+
+    BFS() {
+        const visited = new Set([0])
+        const searchTree = new Graph(this.mat.length)
+        const queue = [0]
+
+        while (queue.length) {
+            const current = queue.shift()
+            for (const neighbour of this.neighbours(current)) {
+                if (visited.has(neighbour)) {
+                    continue
+                }
+                visited.add(neighbour)
+                searchTree.addEdge(current, neighbour)
+                queue.push(neighbour)
+            }
+        }
+        return searchTree
+    }
+
 }

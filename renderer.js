@@ -29,7 +29,6 @@ function getEnableDisableString(condition, data){
 
 let graph 
 
-
 let particleCountDiv = document.getElementById('particlesCount')
 
 let stage = new PIXI.Container
@@ -52,7 +51,7 @@ stage.scale.set(100, -100)
 
 function setup() {
 
-    graph = Graph.random(8, 0.4)
+    graph = Graph.random(8, 1).BFS()
     graph.spawn()
 
     g_groundBody = world.CreateBody(new b2BodyDef);
