@@ -15,9 +15,9 @@ export class WorldElement {
         this.userData = userData
     }
 
-    display() {    }
+    display() { }
 }
-    
+
 WorldElement.elements = []
 WorldElement.container = new PIXI.Container
 
