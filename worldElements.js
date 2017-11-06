@@ -1,64 +1,60 @@
+import 'pixi.js'
 
-
-class WorldElement {
-    constructor([x, y], shape) {
+export class WorldElement {
+    constructor([x, y], shape, color, userData) {
         const bd = new b2BodyDef;
         bd.position.Set(x, y);
         bd.type = b2_dynamicBody;
         this.body = world.CreateBody(bd);
-
         WorldElement.elements.push(this)
-
+        this.graphic = new PIXI.Graphics
+        WorldElement.container.addChild(this.graphic)
         //tmp
         let density = 1
-        this.body.CreateFixtureFromShape(shape, density);
+        const fixture = this.body.CreateFixtureFromShape(shape, density);
+        this.userData = userData
+    }
 
+    display() { }
+}
+
+WorldElement.elements = []
+WorldElement.container = new PIXI.Container
+
+export class Circle extends WorldElement {
+    constructor([x, y], radius, color, userData) {
+        let shape = new b2CircleShape
+        shape.radius = radius;
+        super([x, y], shape, color, userData)
+        this.color = color
+        this.radius = radius
+        this.text = new PIXI.Text(this.userData.index)
+        this.text.width = 1.5 * this.radius
+        this.text.height = 2 * this.radius
+        this.text.anchor.set(0.5, 0.5)
+        this.text.scale.set(this.text.scale.x, this.text.scale.y * -1)
+        WorldElement.container.addChild(this.text)
+        
+        this.graphic.beginFill(color)
+        this.graphic.drawCircle(0, 0, 1.2*radius)
+        this.graphic.endFill()
     }
 
     display() {
+        let pos = this.body.GetPosition()
+        this.graphic.position.x = pos.x
+        this.graphic.position.y = pos.y
+        this.text.position.set(pos.x, pos.y)
     }
 
-    static getElements() {
-        return WorldElement.elements
-    }
-}
-WorldElement.elements = []
-
-class Circle extends WorldElement {
-    constructor([x, y], radius, color, index) {
-        var shape = new b2CircleShape
-        shape.radius = radius;
-        super([x, y], shape)
-        this.color = color
-        this.radius = radius
-        this.index = index
-    }
-
-    display(sketch) {
-        const pos = this.body.GetPosition()
-        const radius = 2 * this.radius
-        sketch.push()
-        sketch.translate(pos.x * scaleMulti, pos.y * scaleMulti)
-        sketch.noStroke()
-        sketch.fill(sketch.color(this.color))
-        sketch.ellipse(0, 0, radius * scaleMulti, radius * scaleMulti)
-        if (this.index !== undefined) {
-            sketch.fill(255)
-            sketch.strokeWeight(3)
-            sketch.textSize(radius * scaleMulti)
-            sketch.textAlign(sketch.CENTER, sketch.CENTER)
-            sketch.rotate(Math.PI)
-            sketch.text(this.index, 0, 0)
-        }
-        sketch.pop()
-    }
 }
 
-class JointLine {
+export class JointLine {
     constructor([bodyA, bodyB], frequency, damping, length, thickness, color) {
         this.bodies = [bodyA, bodyB]
         this.thickness = thickness
         this.color = color
+        this.graphic = new PIXI.Graphics
 
         let djd = new b2DistanceJointDef
         djd.bodyA = bodyA
@@ -66,24 +62,24 @@ class JointLine {
         djd.frequencyHz = frequency
         djd.dampingRatio = damping
         djd.length = length
-        world.CreateJoint(djd)
+        this.joint = world.CreateJoint(djd)
 
         WorldElement.elements.push(this)
-
+        WorldElement.container.addChild(this.graphic)
     }
 
-    display(sketch) {
-        const posA = this.bodies[0].GetPosition()
-        const posB = this.bodies[1].GetPosition()
+    destroy() {
+        world.DestroyJoint(this.joint)
+        WorldElement.container.removeChild(this.graphic)
+    }
 
-        sketch.strokeWeight(this.thickness * scaleMulti)
-        sketch.stroke(sketch.color(this.color))
-        sketch.line(posA.x * scaleMulti, posA.y * scaleMulti, posB.x * scaleMulti, posB.y * scaleMulti)
-
+    display() {
+        let pos = this.bodies
+        let posA = pos[0].GetPosition()
+        let posB = pos[1].GetPosition()
+        this.graphic.clear()
+        this.graphic.lineStyle(this.thickness, this.color)
+        this.graphic.moveTo(posA.x, posA.y)
+        this.graphic.lineTo(posB.x, posB.y)
     }
 }
-
-
-module.exports.worldElement = WorldElement
-module.exports.circle = Circle
-module.exports.jointLine = JointLine
