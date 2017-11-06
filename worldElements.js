@@ -28,7 +28,6 @@ export class Circle extends WorldElement {
         super([x, y], shape, color, userData)
         this.color = color
         this.radius = radius
-        this.graphic.interactive = true
         this.text = new PIXI.Text(this.userData.index)
         this.text.width = 1.5 * this.radius
         this.text.height = 2 * this.radius
@@ -36,12 +35,6 @@ export class Circle extends WorldElement {
         this.text.scale.set(this.text.scale.x, this.text.scale.y * -1)
         WorldElement.container.addChild(this.text)
         
-        //#TODO: mouse joint has 1m length
-        this.mouseMoving = false
-        this.graphic.on('pointerdown', (mouse) => this.mouseDown(mouse))
-        this.graphic.on('pointerupoutside', (mouse) => this.mouseUp(mouse))
-        this.graphic.on('pointerup', (mouse) => this.mouseUp(mouse))
-        this.graphic.on('pointermove', (mouse) => this.mouseMove(mouse))
         this.graphic.beginFill(color)
         this.graphic.drawCircle(0, 0, 1.2*radius)
         this.graphic.endFill()
@@ -54,32 +47,6 @@ export class Circle extends WorldElement {
         this.text.position.set(pos.x, pos.y)
     }
 
-    mouseDown(mouse) {
-        let md = new b2MouseJointDef
-        md.bodyA = world.bodies[0]
-        md.bodyB = this.body
-        md.collideConnected = true
-        md.maxForce = 1000
-        md.dampingRatio = 0
-        this.mouseJoint = world.CreateJoint(md)
-        this.body.SetAwake(true)
-        this.mouseMoving = true
-        this.target = mouse.target.parent
-    }
-
-    mouseMove(mouse) {
-        if (this.mouseMoving) {
-            let mousePos = mouse.data.getLocalPosition(this.target.parent)
-            this.mouseJoint.SetTarget(mousePos)
-        }
-    }
-
-    mouseUp(mouse) {
-        if (this.mouseMoving) {
-            this.mouseMoving = false
-            world.DestroyJoint(this.mouseJoint)
-        }
-    }
 }
 
 export class JointLine {
