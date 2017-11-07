@@ -1,6 +1,7 @@
 import 'pixi.js'
 import { WorldElement } from './worldElements'
 import { spawnParticles } from './particles'
+import { allahuAkbar } from "./allahu-akbar";
 import 'fpsmeter'
 import htmlUtilis from './htmlUtilis'
 let app, renderer, stage, meter, particlesContainer
@@ -143,7 +144,8 @@ function getMousePosition(mouse) {
 function onMouseDown(mouse) {
     const localPos = getMousePosition(mouse)
     if (particlesOnClick) {
-        spawnParticles([localPos.x, localPos.y], [0.25, 0.25], 0.03)
+        allahuAkbar({ center: localPos })
+        //spawnParticles([localPos.x, localPos.y], [0.25, 0.25], 0.03)
     } else {
         var aabb = new b2AABB;
         aabb.lowerBound = new b2Vec2(localPos.x + 0.001, localPos.y - 0.001)
