@@ -1,6 +1,6 @@
 
 
-export function allahuAkbar({ center, particleCount = 100, blastPower = 20 }) {
+export function allahuAkbar({ center, particleCount = 100, blastPower = 200 }) {
 
     const bodies = []
     setTimeout(function() {
@@ -10,7 +10,6 @@ export function allahuAkbar({ center, particleCount = 100, blastPower = 20 }) {
     }, 500);
     for (let i = 0; i < particleCount; i++) { 
         const angle = (i / particleCount) * Math.PI * 2;
-        console.log(angle)
         
         let dir = new b2Vec2(Math.sin(angle), Math.cos(angle))
         let velocity = new b2Vec2
