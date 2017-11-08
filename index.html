@@ -11,15 +11,26 @@
             <button id="buttonRefreshGraph">Refresh Graph </button>
         </div>
     </div>
+    <div id="graphSpawning">
+        Graph vertices:
+        <input id="inputGraphVertices" size="1" value="8" />
+        <br> Edge probability:
+        <input id="inputGraphProb" size="1" value="0.99" />
+        <br>
+        <button id="buttonSpawnGraph">Spawn Graph</button>
+    </div>
     <div id="canvas"></div>
     <div id="meter"></div>
     <div>
         <div id="gravity">Gravity</div>
         <div id="particlesCount"></div>
         <div id="graphIsConnected"></div>
-        <button id="buttonAddParticles">Enable particles on click</button>
-        <button id="buttonConnectivity">Check Connectivity</button>
     </div>
+    <div>
+        Click effect:
+        <select id="selectClickOption"></select>
+    </div>
+    <button id="buttonConnectivity">Check Connectivity</button>
     <script src="liquidfun.js"></script>
     <script src="bundle.js" charset="utf-8"></script>
 </body>

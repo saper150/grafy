@@ -34,9 +34,9 @@ export class Circle extends WorldElement {
         this.text.anchor.set(0.5, 0.5)
         this.text.scale.set(this.text.scale.x, this.text.scale.y * -1)
         WorldElement.container.addChild(this.text)
-        
+
         this.graphic.beginFill(color)
-        this.graphic.drawCircle(0, 0, 1.2*radius)
+        this.graphic.drawCircle(0, 0, 1.2 * radius)
         this.graphic.endFill()
     }
 
@@ -45,6 +45,11 @@ export class Circle extends WorldElement {
         this.graphic.position.x = pos.x
         this.graphic.position.y = pos.y
         this.text.position.set(pos.x, pos.y)
+    }
+
+    destroy() {
+        world.DestroyBody(this.body)
+        WorldElement.container.removeChild(this.graphic)
     }
 
 }

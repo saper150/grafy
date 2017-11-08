@@ -1,6 +1,6 @@
 import { Circle, JointLine, WorldElement } from './worldElements'
 import { GraphTable } from './UItables'
-import htmlUtilis from './htmlUtilis'
+import {htmlUtilis} from './htmlUtilis'
 
 export class Graph {
 
