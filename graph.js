@@ -1,6 +1,6 @@
 import { Circle, JointLine, WorldElement } from './worldElements'
 import { GraphTable } from './UItables'
-import {htmlUtilis} from './htmlUtilis'
+import { htmlUtilis } from './htmlUtilis'
 
 export class Graph {
 
@@ -19,20 +19,20 @@ export class Graph {
 
     createTable(buttonName) {
         this.table = new GraphTable('AdjTable', this)
-        this.showTable = true
         let button = document.getElementById(buttonName)
         button.onclick = () => {
-            this.showTable = !this.showTable
-            button.firstChild.data = htmlUtilis.twoStateName(this.showTable, 'Show', 'Hide', 'table')
-            if (this.showTable)
-                this.table.hideTable()
-            else
+            let display = document.getElementById('AdjTable').style.display === 'none'
+            button.firstChild.data = htmlUtilis.twoStateName(!display, 'Show', 'Hide', 'table')
+            if (display)
                 this.table.showTable()
+            else
+                this.table.hideTable()
         }
 
         let connectivityDiv = document.getElementById('graphIsConnected')
         document.getElementById('buttonConnectivity').onclick = () => connectivityDiv.innerHTML = `is connected: ${this.isGraphConnected()}`
     }
+
 
     static random(vertexCount, edgeChance, options) {
         const graph = new Graph(vertexCount, options)
@@ -58,6 +58,13 @@ export class Graph {
             this.vertices.push(new Circle([x, y], 0.14, this.color, { index: ++index }))
         }
         this.createEdges(this.vertices)
+    }
+
+    destroy() {
+        this.edgeObjects.forEach((element) => element.destroy())
+        this.vertices.forEach((element) => element.destroy())
+        if (this.table !== undefined)
+            this.table.deleteTable()
     }
 
     tick() {
@@ -109,7 +116,7 @@ export class Graph {
     //Depth-first search
     DFS() {
         const visited = new Set()
-        const searchTree = new Graph(this.mat.length, {color: 0x00ff00})
+        const searchTree = new Graph(this.mat.length, { color: 0x00ff00 })
         const $inner = root => {
             visited.add(root)
             for (const neighbour of this.neighbours(root)) {
@@ -125,7 +132,7 @@ export class Graph {
 
     BFS() {
         const visited = new Set([0])
-        const searchTree = new Graph(this.mat.length, {color: 0xffff00})
+        const searchTree = new Graph(this.mat.length, { color: 0xffff00 })
         const queue = [0]
 
         while (queue.length) {

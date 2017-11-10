@@ -1,6 +1,6 @@
 import 'pixi.js'
 import { WorldElement } from './worldElements'
-import { spawnParticles } from './particles'
+import { addWaterToWorld } from './particles'
 import { allahuAkbar } from "./allahu-akbar";
 import 'fpsmeter'
 import { htmlUtilis } from './htmlUtilis'
@@ -16,34 +16,35 @@ document.addEventListener('keydown', onKeyDown);
 document.addEventListener('mouseup', onMouseUp)
 meter = new FPSMeter(document.getElementById('canvas'), { position: 'sticky', margin: 'inherit', width: 50, graph: 1, history: 20, heat: 1 })
 
-
-
-const clickOptionsList = ['move', 'add water', 'kaboom']
-function selectClickOptionSetup() {
-    selectClickOption = document.getElementById('selectClickOption')
-    clickOptionsList.forEach(x => selectClickOption.add(htmlUtilis.createOption(x)))
-}
-
-
-
 let g_groundBody = null
 let mouseJoint = null
 
-let buttonSpawnGraph
 
-function buttonSpawnGraphSetup() {
-    buttonSpawnGraph = document.getElementById('buttonSpawnGraph')
-    buttonSpawnGraph.onclick = () => {
-        const vertices = parseInt(document.getElementById('inputGraphVertices').value)
-        const prob = parseFloat(document.getElementById('inputGraphProb').value)
-        let graph = Graph.random(vertices, prob, { createTable: true, buttonName: 'buttonCreateAdjTable', color: 0xff0000 })
-        graphs.push(graph, graph.BFS(), graph.DFS())
-        graphs.forEach(g => g.spawn())
-        document.getElementById('graphSpawning').style.display = 'none'
-    }
-
+function spawnGraph() {
+    destroyGraphs()
+    const vertices = parseInt(document.getElementById('inputGraphVertices').value)
+    const prob = parseFloat(document.getElementById('inputGraphProb').value)
+    let graph = Graph.random(vertices, prob, { createTable: true, buttonName: 'buttonShowHideTable', color: 0xff0000 })
+    graphs.push(graph, graph.BFS(), graph.DFS())
+    graphs.forEach(g => g.spawn())
 }
 
+function destroyGraphs() {
+    graphs.forEach(g => g.destroy())
+    graphs = []
+}
+
+
+function buttonsSetup() {
+    htmlUtilis.setupButtonWithClick({ name: 'buttonSpawnGraph', action: spawnGraph })
+    htmlUtilis.setupButtonWithClick({ name: 'buttonSpawnWater', action: spawnWater })
+    htmlUtilis.setupButtonWithClick({ name: 'buttonDestroyGraph', action: destroyGraphs })
+}
+
+function spawnWater() {
+    const count = addWaterToWorld({ x: 0, y: 1, width: 0.55, height: 1.5, count: 7 })
+    addNewParticlesToRender(count)
+}
 
 function stageSetup() {
     stage = new PIXI.Container
@@ -66,14 +67,14 @@ PIXI.loader
     .load(setup)
 
 function setup() {
-    selectClickOptionSetup()
-    buttonSpawnGraphSetup()
+    selectClickOption = htmlUtilis.setupSelectWithOptions({ name: 'selectClickOption', options: ['move', 'add water', 'kaboom'] })
+    buttonsSetup()
     stageSetup()
     particleSetup([makeBlur(3)])
     g_groundBody = world.CreateBody(new b2BodyDef);
     stage.addChild(WorldElement.container)
-
     htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
+
     //main loop
     app.ticker.add(function () {
         meter.tickStart()
@@ -83,26 +84,16 @@ function setup() {
 
         graphs.forEach(g => g.tick())
 
-        newParticles()
         renderer.render(stage)
         meter.tick()
     })
 }
 
-function newParticles() {
-    const newParticlesCount = world.particleSystems[0].GetParticleCount() / 2 - particlesContainer.children.length
-    const radius = world.particleSystems[0].radius
-    if (newParticlesCount > 0) {
-        for (var i = 0; i < newParticlesCount; i++) {
-            particlesContainer.addChild(makeSprite(2 * radius, 2 * radius, PIXI.loader.resources['assets/images/Circle.png'].texture))
-        }
-        htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
-    }
-}
+
 
 function makeSprite(width, height, texture) {
     let sprite = new PIXI.Sprite(texture)
-    sprite.position.set(100,100)
+    sprite.position.set(100, 100)
     sprite.width = width
     sprite.height = height
     sprite.anchor.set(0.5, 0.5)
@@ -159,14 +150,18 @@ const gravityChange = [
 ]
 
 function onKeyDown(key) {
-    if (key.keyCode === 32)
+    if (key.keyCode === 32) {
         world.multGravity(-1, -1)
-
+        key.preventDefault()
+    }
     gravityChange.forEach((change) => {
         if (change.key === key.keyCode) {
             world.addToGravity(change.x, change.y)
+            key.preventDefault()
         }
     })
+    if (key.code === 'KeyG')
+        world.resetGravity()
     htmlUtilis.setTextInDiv('gravity', `Gravity: ${world.gravity.x}, ${world.gravity.y}`)
 }
 
@@ -182,7 +177,7 @@ function onMouseDown(mouse) {
     if (selectClickOption.value === 'kaboom')
         allahuAkbar({ center: localPos })
     if (selectClickOption.value === 'add water')
-        spawnParticles([localPos.x, localPos.y], [0.25, 0.25], 0.03)
+        addNewParticles({ x: localPos.x, y: localPos.y, width: 0.25, height: 0.25, count: 1 })
 }
 
 function onMouseUp() {
@@ -196,5 +191,18 @@ function onMouseMove(event) {
     if (mouseJoint) {
         mouseJoint.SetTarget(getMousePosition(event))
     }
+}
+
+function addNewParticles(settings) {
+    const count = addWaterToWorld(settings)
+    addNewParticlesToRender(count)
+}
+
+function addNewParticlesToRender(count) {
+    const radius = world.particleSystems[0].radius
+    for (var i = 0; i < count; i++) {
+        particlesContainer.addChild(makeSprite(2 * radius, 2 * radius, PIXI.loader.resources['assets/images/Circle.png'].texture))
+    }
+    htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
 }
 

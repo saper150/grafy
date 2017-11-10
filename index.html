@@ -6,31 +6,34 @@
 
 <body>
     <div class="ui container">
-        <button id="buttonCreateAdjTable" class="ui primary button">Show table</button>
-        <div id="AdjTable">
-            <button id="buttonRefreshGraph">Refresh Graph </button>
-        </div>
+        <button id="buttonShowHideTable" class="ui primary button">Show table</button>
+        <div id="AdjTable" style="display: none"></div>
     </div>
-    <div id="graphSpawning">
+    <div id="spawning">
         Graph vertices:
         <input id="inputGraphVertices" size="1" value="8" />
         <br> Edge probability:
         <input id="inputGraphProb" size="1" value="0.99" />
         <br>
         <button id="buttonSpawnGraph">Spawn Graph</button>
+        <button id="buttonDestroyGraph">Destroy Graph</button>
+        <br>
+        <button id="buttonSpawnWater">Spawn water</button>
     </div>
-    <div id="canvas"></div>
-    <div id="meter"></div>
-    <div>
+    <div id="info">
         <div id="gravity">Gravity</div>
         <div id="particlesCount"></div>
-        <div id="graphIsConnected"></div>
+        <div id="graphIsConnected">is connected: ?</div>
+        <button id="buttonConnectivity">Check Connectivity</button>
+
+        <div>
+            Click effect:
+            <select id="selectClickOption"></select>
+        </div>
     </div>
-    <div>
-        Click effect:
-        <select id="selectClickOption"></select>
-    </div>
-    <button id="buttonConnectivity">Check Connectivity</button>
+    <br>
+    <div id="canvas"></div>
+    <div id="meter"></div>
     <script src="liquidfun.js"></script>
     <script src="bundle.js" charset="utf-8"></script>
 </body>
