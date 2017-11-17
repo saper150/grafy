@@ -4,6 +4,7 @@ import { addWaterToWorld } from './particles'
 import { allahuAkbar } from "./allahu-akbar";
 import 'fpsmeter'
 import { htmlUtilis } from './htmlUtilis'
+import 'jquery/jquery.js'
 let app, renderer, stage, meter, particlesContainer, selectClickOption
 let graphs = []
 app = new PIXI.Application
@@ -25,8 +26,10 @@ function spawnGraph() {
     const vertices = parseInt(document.getElementById('inputGraphVertices').value)
     const prob = parseFloat(document.getElementById('inputGraphProb').value)
     let graph = Graph.random(vertices, prob, { createTable: true, buttonName: 'buttonShowHideTable', color: 0xff0000 })
-    graphs.push(graph, graph.BFS(), graph.DFS())
+    graphs.push(graph)
     graphs.forEach(g => g.spawn())
+    $('#buttonDFScreate').attr('disabled', false)
+    $('#buttonBFScreate').attr('disabled', false)
 }
 
 function destroyGraphs() {
@@ -34,16 +37,49 @@ function destroyGraphs() {
     graphs = []
 }
 
+function spawnDFS(){
+    let dfs = graphs[0].DFS() 
+    graphs.push(dfs)
+    dfs.spawn()
+    $('#buttonDFScreate').attr('disabled', true)
+}
+
+function spawnBFS(){
+    let bfs = graphs[0].BFS() 
+    graphs.push(bfs)
+    bfs.spawn()
+    $('#buttonBFScreate').attr('disabled', true)
+}
+
+function clearSearches(){
+    $('#buttonDFScreate').attr('disabled', false)
+    $('#buttonBFScreate').attr('disabled', false)
+    graphs.splice(1).forEach(g => g.destroy())
+}
+
+function removeWater(){
+    world.particleSystems[0].particleGroups.forEach(p => p.DestroyParticles())
+    particlesContainer.children.forEach(p => p.destroy(true))
+    // particlesContainer.children.forEach( p => particlesContainer.removeChild(p))
+    for (let i = particlesContainer.children.length - 1; i >= 0; i--)
+        particlesContainer.removeChild(particlesContainer.children[i])
+}
 
 function buttonsSetup() {
     htmlUtilis.setupButtonWithClick({ name: 'buttonSpawnGraph', action: spawnGraph })
     htmlUtilis.setupButtonWithClick({ name: 'buttonSpawnWater', action: spawnWater })
+    htmlUtilis.setupButtonWithClick({name: 'buttonRemoveWater', action: removeWater})
     htmlUtilis.setupButtonWithClick({ name: 'buttonDestroyGraph', action: destroyGraphs })
+    htmlUtilis.setupButtonWithClick({name: 'buttonDFScreate', action: spawnDFS})
+    htmlUtilis.setupButtonWithClick({name: 'buttonBFScreate', action: spawnBFS})
+    htmlUtilis.setupButtonWithClick({name: 'buttonGraphSearchClear', action: clearSearches})
+    
 }
 
 function spawnWater() {
     const count = addWaterToWorld({ x: 0, y: 1, width: 0.55, height: 1.5, count: 7 })
     addNewParticlesToRender(count)
+    
 }
 
 function stageSetup() {
@@ -91,8 +127,8 @@ function setup() {
 
 
 
-function makeSprite(width, height, texture) {
-    let sprite = new PIXI.Sprite(texture)
+function makeSprite(width, height, texturePath) {
+    let sprite = new PIXI.Sprite(PIXI.Texture.fromImage(texturePath));
     sprite.position.set(100, 100)
     sprite.width = width
     sprite.height = height
@@ -106,7 +142,7 @@ function particleSetup(filterArray) {
     const particleCount = world.particleSystems[0].GetParticleCount() / 2
     const radius = world.particleSystems[0].radius
     for (let i = 0; i < particleCount; i++) {
-        particlesContainer.addChild(makeSprite(2 * radius, 2 * radius, PIXI.loader.resources['assets/images/Circle.png'].texture))
+        particlesContainer.addChild(makeSprite(2 * radius, 2 * radius, 'assets/images/Circle.png'))
     }
     if (filterArray)
         particlesContainer.filters = filterArray
@@ -201,7 +237,7 @@ function addNewParticles(settings) {
 function addNewParticlesToRender(count) {
     const radius = world.particleSystems[0].radius
     for (var i = 0; i < count; i++) {
-        particlesContainer.addChild(makeSprite(2 * radius, 2 * radius, PIXI.loader.resources['assets/images/Circle.png'].texture))
+        particlesContainer.addChild(makeSprite(2 * radius, 2 * radius, 'assets/images/Circle.png'))
     }
     htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
 }

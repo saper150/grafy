@@ -1,37 +1,49 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 
 <body>
-    <div class="ui container">
-        <button id="buttonShowHideTable" class="ui primary button">Show table</button>
+    <div>
+        <button id="buttonShowHideTable" type="button" class="btn btn-primary">Show table</button>
         <div id="AdjTable" style="display: none"></div>
     </div>
-    <div id="spawning">
-        Graph vertices:
-        <input id="inputGraphVertices" size="1" value="8" />
-        <br> Edge probability:
-        <input id="inputGraphProb" size="1" value="0.99" />
-        <br>
-        <button id="buttonSpawnGraph">Spawn Graph</button>
-        <button id="buttonDestroyGraph">Destroy Graph</button>
-        <br>
-        <button id="buttonSpawnWater">Spawn water</button>
-    </div>
-    <div id="info">
-        <div id="gravity">Gravity</div>
-        <div id="particlesCount"></div>
-        <div id="graphIsConnected">is connected: ?</div>
-        <button id="buttonConnectivity">Check Connectivity</button>
+    <div class="container-fluid">
 
-        <div>
-            Click effect:
-            <select id="selectClickOption"></select>
+        <div class="row justify-content-start">
+            <div class="col-auto">
+
+                Graph vertices:
+                <input id="inputGraphVertices" size="1" value="8" />
+                <br> Edge probability:
+                <input id="inputGraphProb" size="1" value="0.99" />
+                <br>
+                <button id="buttonSpawnGraph" class="btn btn-Success">Spawn Graph</button>
+                <button id="buttonDestroyGraph" class="btn btn-Danger">Destroy Graph</button>
+                <div id="divGraphSearch" class="btn-group" style="display: block" >
+                    <button id="buttonDFScreate" class="btn btn-warning" disabled>DFS</button>
+                    <button id="buttonBFScreate" class="btn btn-warning" disabled>BFS</button>
+                    <button id="buttonGraphSearchClear" class="btn btn-dark">Clear searches</button>
+                </div>
+                <br>
+                <button id="buttonSpawnWater" class="btn btn-primary">Spawn water</button>
+                <button id="buttonRemoveWater" class="btn btn-danger">Remove water</button>
+            </div>
+            <div id="info" class="col-auto">
+                <div id="gravity">Gravity</div>
+                <div id="particlesCount"></div>
+                <div id="graphIsConnected">is connected: ?</div>
+                <button id="buttonConnectivity" class="btn btn-info">Check Connectivity</button>
+                
+                <div>
+                    Click effect:
+                    <select id="selectClickOption" class="form-control"></select>
+                </div>
+            </div>
         </div>
+        <br>
     </div>
-    <br>
     <div id="canvas"></div>
     <div id="meter"></div>
     <script src="liquidfun.js"></script>

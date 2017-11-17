@@ -17,7 +17,6 @@ export function addWaterToWorld(settings) {
     const pd = new b2ParticleGroupDef()
     pd.shape = polygonShape
     pd.flags = b2_colorMixingParticle
-
     let particleCount = 0;
     for (let i = 0; i < settings.count; i++) {
         pd.position.Set(i * settings.width * 2, 0)
