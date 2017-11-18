@@ -28,6 +28,7 @@ export class GraphTable {
     createRefreshButton(){
         let t = document.createTextNode("Refresh graph")
         let button = document.createElement('button')
+        button.setAttribute("class", "btn btn-warning")
         button.onclick = () => this.updateGraph()
         button.appendChild(t)
         this.container.appendChild(button)
@@ -36,7 +37,6 @@ export class GraphTable {
         if (this.hot != null) {
             return
         }
-        // document.getElementById(this.elementID).style.display = 'none'
         this.container = document.getElementById(this.elementID)
         this.hot = new Handsontable(this.container, {
             data: this.data,

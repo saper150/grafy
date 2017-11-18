@@ -2,9 +2,13 @@ import { Circle, JointLine, WorldElement } from './worldElements'
 import { GraphTable } from './UItables'
 import { htmlUtilis } from './htmlUtilis'
 
+const colors = [0xff0000, 0x00ff00, 0x8080ff, 0xffff00, 0x00ffff, 0xff00ff, 0xff8800, 0xff0088, 0x0088ff, 0x00ff88, 0x88ff00, 0x8800ff]
+
 export class Graph {
 
     constructor(vertexCount, options) {
+        this.radius = 0.18
+        this.edgeLength = 1.3
         this.mat = Array.from(Array(vertexCount).keys())
             .map(y => Array(vertexCount).fill(0))
         this.edgeObjects = []
@@ -14,7 +18,13 @@ export class Graph {
                 this.createTable(options.buttonName)
             if (options.color)
                 this.color = options.color
+            if (options.radius)
+                this.radius = options.radius
+            if (options.length)
+                this.edgeLength = options.length
         }
+
+
     }
 
     createTable(buttonName) {
@@ -52,10 +62,10 @@ export class Graph {
     spawn() {
         let index = 0
         this.vertices = []
-        for (let i = 0; i < Math.PI * 2; i += Math.PI * 2 / this.mat.length) {
+        for (let i = 0; i < (Math.PI * 2).toFixed(6); i += Math.PI * 2 / this.mat.length) {
             const x = (Math.sin(i) * 1.3) + 0
             const y = (Math.cos(i) * 1.3) + 0
-            this.vertices.push(new Circle([x, y], 0.14, this.color, { index: ++index }))
+            this.vertices.push(new Circle([x, y], this.radius, this.color, { index: ++index }))
         }
         this.createEdges(this.vertices)
     }
@@ -84,7 +94,7 @@ export class Graph {
 
     createEdges(vertices) {
         for (const [a, b] of this.edges()) {
-            this.edgeObjects.push(new JointLine([vertices[a].body, vertices[b].body], 2, 0.1, 1, 0.01, 0xffffff))
+            this.edgeObjects.push(new JointLine([vertices[a].body, vertices[b].body], 2, 0.1, this.edgeLength, 0.01, 0xffffff))
         }
     }
 
@@ -103,6 +113,10 @@ export class Graph {
             .map(([x, index]) => index)
     }
 
+    areNeighbours(a, b) {
+        return this.neighbours(a).includes(b)
+    }
+
     edges() {
         const result = []
         for (let i = 0; i < this.mat.length; i++) {
@@ -111,6 +125,30 @@ export class Graph {
             }
         }
         return result
+    }
+
+    coloring() {
+        let vertices = Array.from(Array(this.mat.length).keys()).sort((a, b) => this.neighbours(a).length - this.neighbours(b).length)
+        let colorIndex = 0
+        let $inner = layer => {
+            let lastColored = []
+            for (let i = vertices.length - 1; i >= 0; i--) {
+                let toColor = true
+                for (const col of lastColored) {
+                    if (this.areNeighbours(col, vertices[i]))
+                        toColor = false
+                }
+                if (toColor) {
+                    this.vertices[vertices[i]].colorVertex(colors[colorIndex])
+                    lastColored.push(vertices[i])
+                    vertices.splice(i, 1)
+                }
+            }
+            colorIndex++
+            if (vertices.length > 0)
+                $inner(vertices)
+        }
+        $inner(vertices)
     }
 
     //Depth-first search

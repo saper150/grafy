@@ -13,18 +13,30 @@
 
         <div class="row justify-content-start">
             <div class="col-auto">
+                <div class="row justify-content-start">
+                    <div class="col-auto">
 
-                Graph vertices:
-                <input id="inputGraphVertices" size="1" value="8" />
-                <br> Edge probability:
-                <input id="inputGraphProb" size="1" value="0.99" />
+                        Graph vertices:
+                        <input id="inputGraphVertices" class="form-control" size="1" value="8" />
+                        <br> Edge probability:
+                        <input id="inputGraphProb" size="1" class="form-control" value="0.5" />
+                    </div>
+                    <div class="col-auto">
+                        Vertex radius:
+                        <input id="inputGraphRadius" size="1" class="form-control" value="0.18" />
+                        <br> Edge length:
+                        <input id="inputGraphLength" size="1" class="form-control" value="1" />
+                    </div>
+                </div>
                 <br>
                 <button id="buttonSpawnGraph" class="btn btn-Success">Spawn Graph</button>
                 <button id="buttonDestroyGraph" class="btn btn-Danger">Destroy Graph</button>
-                <div id="divGraphSearch" class="btn-group" style="display: block" >
+                <br><br>
+                <div id="divGraphSearch" class="btn-group" style="display: block">
                     <button id="buttonDFScreate" class="btn btn-warning" disabled>DFS</button>
                     <button id="buttonBFScreate" class="btn btn-warning" disabled>BFS</button>
                     <button id="buttonGraphSearchClear" class="btn btn-dark">Clear searches</button>
+                    <button id="buttonColoring" class="btn btn-success" disabled>Coloring</button>
                 </div>
                 <br>
                 <button id="buttonSpawnWater" class="btn btn-primary">Spawn water</button>
@@ -35,7 +47,7 @@
                 <div id="particlesCount"></div>
                 <div id="graphIsConnected">is connected: ?</div>
                 <button id="buttonConnectivity" class="btn btn-info">Check Connectivity</button>
-                
+
                 <div>
                     Click effect:
                     <select id="selectClickOption" class="form-control"></select>

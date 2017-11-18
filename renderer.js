@@ -23,18 +23,25 @@ let mouseJoint = null
 
 function spawnGraph() {
     destroyGraphs()
-    const vertices = parseInt(document.getElementById('inputGraphVertices').value)
-    const prob = parseFloat(document.getElementById('inputGraphProb').value)
-    let graph = Graph.random(vertices, prob, { createTable: true, buttonName: 'buttonShowHideTable', color: 0xff0000 })
+    const vertices = parseInt($('#inputGraphVertices').val())
+    const prob = parseFloat($('#inputGraphProb').val())
+    const radius = parseFloat($('#inputGraphRadius').val())
+    const length = parseFloat($('#inputGraphLength').val())
+    let graph = Graph.random(vertices, prob, { createTable: true, buttonName: 'buttonShowHideTable', color: 0xff0000, radius: radius, length: length })
     graphs.push(graph)
     graphs.forEach(g => g.spawn())
     $('#buttonDFScreate').attr('disabled', false)
     $('#buttonBFScreate').attr('disabled', false)
+    $('#buttonColoring').attr('disabled', false)
 }
 
 function destroyGraphs() {
     graphs.forEach(g => g.destroy())
     graphs = []
+
+    $('#buttonDFScreate').attr('disabled', true)
+    $('#buttonBFScreate').attr('disabled', true)
+    $('#buttonColoring').attr('disabled', true)
 }
 
 function spawnDFS(){
@@ -54,6 +61,7 @@ function spawnBFS(){
 function clearSearches(){
     $('#buttonDFScreate').attr('disabled', false)
     $('#buttonBFScreate').attr('disabled', false)
+    $('#buttonColoring').attr('disabled', false)
     graphs.splice(1).forEach(g => g.destroy())
 }
 
@@ -65,6 +73,10 @@ function removeWater(){
         particlesContainer.removeChild(particlesContainer.children[i])
 }
 
+function graphColoring(){
+    graphs[0].coloring()
+}
+
 function buttonsSetup() {
     htmlUtilis.setupButtonWithClick({ name: 'buttonSpawnGraph', action: spawnGraph })
     htmlUtilis.setupButtonWithClick({ name: 'buttonSpawnWater', action: spawnWater })
@@ -73,6 +85,7 @@ function buttonsSetup() {
     htmlUtilis.setupButtonWithClick({name: 'buttonDFScreate', action: spawnDFS})
     htmlUtilis.setupButtonWithClick({name: 'buttonBFScreate', action: spawnBFS})
     htmlUtilis.setupButtonWithClick({name: 'buttonGraphSearchClear', action: clearSearches})
+    htmlUtilis.setupButtonWithClick({name: 'buttonColoring', action: graphColoring})
     
 }
 
