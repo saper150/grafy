@@ -34,17 +34,31 @@ export class Circle extends WorldElement {
         this.text.anchor.set(0.5, 0.5)
         this.text.scale.set(this.text.scale.x, this.text.scale.y * -1)
         WorldElement.container.addChild(this.text)
-        
-        this.graphic.beginFill(color)
-        this.graphic.drawCircle(0, 0, 1.2*radius)
+
+        this.graphic.beginFill(0xffffff)
+        this.graphic.drawCircle(0, 0, 1.2 * radius)
         this.graphic.endFill()
+        this.graphic.tint = this.color
     }
 
     display() {
+        if(this.destroyed) return
         let pos = this.body.GetPosition()
         this.graphic.position.x = pos.x
         this.graphic.position.y = pos.y
         this.text.position.set(pos.x, pos.y)
+    }
+
+    colorVertex(color){
+        this.graphic.tint = color
+    }
+
+    destroy() {
+        WorldElement.container.removeChild(this.graphic)
+        world.DestroyBody(this.body)
+        this.graphic.destroy(true)
+        this.text.destroy(true)
+        this.destroyed = true
     }
 
 }
@@ -70,10 +84,14 @@ export class JointLine {
 
     destroy() {
         world.DestroyJoint(this.joint)
+        this.graphic.destroy(true)
         WorldElement.container.removeChild(this.graphic)
+        this.destroyed = true
     }
 
     display() {
+        if (this.destroyed) return
+
         let pos = this.bodies
         let posA = pos[0].GetPosition()
         let posB = pos[1].GetPosition()
@@ -81,5 +99,6 @@ export class JointLine {
         this.graphic.lineStyle(this.thickness, this.color)
         this.graphic.moveTo(posA.x, posA.y)
         this.graphic.lineTo(posB.x, posB.y)
+
     }
 }

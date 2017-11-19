@@ -4,6 +4,7 @@ export function initializeWorld(x,y){
     world.gravity = gravity
     world.addToGravity = addToGravity
     world.multGravity = multGravity
+    world.resetGravity = resetGravity
 }
 
 function addToGravity(x,y){
@@ -15,6 +16,12 @@ function addToGravity(x,y){
 function multGravity(x,y){
     world.gravity.x *= x
     world.gravity.y *= y
+    world.SetGravity(world.gravity)
+}
+
+function resetGravity(){
+    world.gravity.x = 0
+    world.gravity.y = 0
     world.SetGravity(world.gravity)
 }
 
