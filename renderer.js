@@ -4,7 +4,8 @@ import { addWaterToWorld } from './particles'
 import { allahuAkbar } from "./allahu-akbar";
 import 'fpsmeter'
 import { htmlUtilis } from './htmlUtilis'
-import 'jquery/jquery.js'
+import * as $ from 'jquery'
+
 let app, renderer, stage, meter, particlesContainer, selectClickOption
 let graphs = []
 app = new PIXI.Application
