@@ -4,13 +4,19 @@ import { addWaterToWorld } from './particles'
 import { allahuAkbar } from "./allahu-akbar";
 import 'fpsmeter'
 import { htmlUtilis } from './htmlUtilis'
+<<<<<<< HEAD
 import * as $ from 'jquery'
 
 let app, renderer, stage, meter, particlesContainer, selectClickOption
+=======
+import $ from 'jquery'
+let app, renderer, stage, meter, particlesContainer, selectClickOption, background
+>>>>>>> space background
 let graphs = []
 app = new PIXI.Application
 renderer = PIXI.autoDetectRenderer(1000, 800)
 import { Graph } from "./graph";
+import { Sprite } from 'pixi.js';
 
 renderer.backgroundColor = 0x999999
 document.getElementById('canvas').appendChild(renderer.view)
@@ -69,9 +75,9 @@ function clearSearches(){
 function removeWater(){
     world.particleSystems[0].particleGroups.forEach(p => p.DestroyParticles())
     particlesContainer.children.forEach(p => p.destroy(true))
-    // particlesContainer.children.forEach( p => particlesContainer.removeChild(p))
     for (let i = particlesContainer.children.length - 1; i >= 0; i--)
         particlesContainer.removeChild(particlesContainer.children[i])
+    $('#particlesCount').text('Particles: 0')
 }
 
 function graphColoring(){
@@ -79,14 +85,14 @@ function graphColoring(){
 }
 
 function buttonsSetup() {
-    htmlUtilis.setupButtonWithClick({ name: 'buttonSpawnGraph', action: spawnGraph })
-    htmlUtilis.setupButtonWithClick({ name: 'buttonSpawnWater', action: spawnWater })
-    htmlUtilis.setupButtonWithClick({name: 'buttonRemoveWater', action: removeWater})
-    htmlUtilis.setupButtonWithClick({ name: 'buttonDestroyGraph', action: destroyGraphs })
-    htmlUtilis.setupButtonWithClick({name: 'buttonDFScreate', action: spawnDFS})
-    htmlUtilis.setupButtonWithClick({name: 'buttonBFScreate', action: spawnBFS})
-    htmlUtilis.setupButtonWithClick({name: 'buttonGraphSearchClear', action: clearSearches})
-    htmlUtilis.setupButtonWithClick({name: 'buttonColoring', action: graphColoring})
+    $('#buttonSpawnGraph').click(spawnGraph)
+    $('#buttonSpawnWater').click(spawnWater)
+    $('#buttonRemoveWater').click(removeWater)
+    $('#buttonDestroyGraph').click(destroyGraphs)
+    $('#buttonDFScreate').click(spawnDFS)
+    $('#buttonBFScreate').click(spawnBFS)
+    $('#buttonGraphSearchClear').click(clearSearches)
+    $('#buttonColoring').click(graphColoring)
     
 }
 
@@ -106,6 +112,11 @@ function stageSetup() {
     stage.scale.set(100, -100)
 }
 
+function backgroundSetup(){
+    background = makeSprite(renderer.width/100,renderer.height/100, 'assets/images/Space.jpg')
+    stage.addChild(background)
+}
+
 function makeBlur(blurStr) {
     let blurFilter = new PIXI.filters.BlurFilter
     blurFilter.blur = blurStr
@@ -114,19 +125,23 @@ function makeBlur(blurStr) {
 
 PIXI.loader
     .add('assets/images/Circle.png')
+    .add('assets/images/Space.jpg')
     .load(setup)
 
 function setup() {
     selectClickOption = htmlUtilis.setupSelectWithOptions({ name: 'selectClickOption', options: ['move', 'add water', 'kaboom'] })
     buttonsSetup()
     stageSetup()
+    backgroundSetup()
     particleSetup([makeBlur(3)])
     g_groundBody = world.CreateBody(new b2BodyDef);
     stage.addChild(WorldElement.container)
-    htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
+    $('#particleCount').text(`Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
 
+    let counter = 0
     //main loop
     app.ticker.add(function () {
+        counter++
         meter.tickStart()
         world.Step(1 / 60, 5, 5)
         particles()
@@ -134,20 +149,21 @@ function setup() {
 
         graphs.forEach(g => g.tick())
 
+        background.alpha = map(Math.abs(world.gravity.x) + Math.abs(world.gravity.y), 0, 5,1,0)
         renderer.render(stage)
         meter.tick()
     })
 }
-
-
+function map(n, start1, stop1, start2, stop2) {
+    return ((n - start1)/(stop1 - start1)) * (stop2 - start2) + start2;
+}
 
 function makeSprite(width, height, texturePath) {
     let sprite = new PIXI.Sprite(PIXI.Texture.fromImage(texturePath));
-    sprite.position.set(100, 100)
+    sprite.position.set(0, 0)
     sprite.width = width
     sprite.height = height
     sprite.anchor.set(0.5, 0.5)
-    sprite.tint = 0x666666
     return sprite
 }
 
@@ -212,7 +228,7 @@ function onKeyDown(key) {
     })
     if (key.code === 'KeyG')
         world.resetGravity()
-    htmlUtilis.setTextInDiv('gravity', `Gravity: ${world.gravity.x}, ${world.gravity.y}`)
+    $('#gravity').text(`Gravity: ${world.gravity.x}, ${world.gravity.y}`)
 }
 
 function getMousePosition(mouse) {
@@ -253,6 +269,6 @@ function addNewParticlesToRender(count) {
     for (var i = 0; i < count; i++) {
         particlesContainer.addChild(makeSprite(2 * radius, 2 * radius, 'assets/images/Circle.png'))
     }
-    htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
+    $('#particlesCount').text(`Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
 }
 
