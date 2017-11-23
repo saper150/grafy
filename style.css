@@ -1,0 +1,43 @@
+.base{
+   width: 1630px;
+   height: 800px;
+   background-color: rgb(143, 214, 202);
+   position: relative;
+}
+.leftbar
+{
+  /*  background-color: rgb(207, 37, 37); */
+    display: flex;
+    height: 300px;
+    width: 300px;
+    display: inline-block;
+    position: absolute;
+    top: 8px;
+    left: 16px;
+}
+.rightbar{
+  /*  background-color: brown; */
+    display: flex;
+    height: 300px;
+    width: 300px;
+    display: inline-block;
+    position: absolute;
+    top: 8px;
+    right: 1px;
+    
+}
+#canvas{
+  /*  background: black; */
+    height: 800px;
+    width: 1000px;
+    display: inline-block;
+    position: absolute;
+    left: 20%;
+  
+  
+}
+.box{
+    display: inline-block;
+    width: 1200px;
+    height: 1200px;
+}
