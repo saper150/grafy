@@ -1,43 +1,51 @@
-.base{
-   width: 1630px;
-   height: 800px;
-   background-color: rgb(143, 214, 202);
-   position: relative;
+
+#canvas > canvas {
+  width:100%
 }
-.leftbar
-{
-  /*  background-color: rgb(207, 37, 37); */
-    display: flex;
-    height: 300px;
-    width: 300px;
-    display: inline-block;
-    position: absolute;
-    top: 8px;
-    left: 16px;
+
+.row{
+  height: 603;
+  font-family: 'Spectral SC', serif;
+  padding-left: 10px;
+  padding-right: 10px;
+   background-image: url("img/hexellence.png")
 }
-.rightbar{
-  /*  background-color: brown; */
-    display: flex;
-    height: 300px;
-    width: 300px;
-    display: inline-block;
-    position: absolute;
-    top: 8px;
-    right: 1px;
-    
+
+.btn{
+  margin-left: 15px;
+  margin-right: 5px;
 }
-#canvas{
-  /*  background: black; */
-    height: 800px;
-    width: 1000px;
-    display: inline-block;
-    position: absolute;
-    left: 20%;
+
+#buttonColoring{
+margin-left: 30%;
+margin-right: 30%;
+background-color: #c96334;
+}
+
+#buttonBFScreate{
+  margin-left: 0px;
+}
+
+#info{
+  text-align: center;
+margin-top: 20px;  
+}
+
+#connected{
+  margin-top: 20px;
+  font-size: 20px;
+  text-align: center;
+  font-family: 'Spectral SC', serif;
   
-  
-}
-.box{
-    display: inline-block;
-    width: 1200px;
-    height: 1200px;
-}
+  }
+
+  .legend{
+    margin-top: 20px;
+    text-indent: 30%;
+    margin-right: 10px;
+  }
+
+  #click_effect{
+    margin-top: 20px;
+    margin-right: 10px;
+  }
