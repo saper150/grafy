@@ -14,17 +14,10 @@
 .btn{
   margin-left: 15px;
   margin-right: 5px;
+ 
 }
 
-#buttonColoring{
-margin-left: 30%;
-margin-right: 30%;
-background-color: #c96334;
-}
 
-#buttonBFScreate{
-  margin-left: 0px;
-}
 
 #info{
   text-align: center;
@@ -49,3 +42,70 @@ margin-top: 20px;
     margin-top: 20px;
     margin-right: 10px;
   }
+
+  .form-control{
+    font-family: 'Roboto Condensed', sans-serif;   
+  }
+
+
+  #buttonSpawnGraph{
+    background-color: rgb(223, 156, 31);
+    border: solid 2px rgb(223, 156, 31);
+  }
+  #buttonSpawnGraph:hover{background-color: rgba(223, 156, 31, 0.616); }
+
+  #buttonDestroyGraph{
+    background-color: rgb(223, 156, 31);
+    border: solid 2px rgb(223, 156, 31);
+  }
+  #buttonDestroyGraph:hover{background-color: rgba(223, 156, 31, 0.616); }
+
+#buttonDFScreate{
+  background-color: rgb(54, 206, 54);
+   border: solid 2px  rgb(54, 206, 54);
+}
+#buttonDFScreate:hover{background-color: rgba(68, 175, 22, 0.61);}
+
+#buttonBFScreate{
+  background-color: rgb(54, 206, 54);
+  border: solid 2px  rgb(54, 206, 54);
+  margin-left: 0px;
+}
+#buttonBFScreate:hover{background-color:rgba(54, 206, 54, 0.61);}
+
+#buttonGraphSearchClear{
+  background-color: rgb(66, 175, 22);
+  border: solid 2px rgb(66, 175, 22);
+  color: white;
+}
+#buttonGraphSearchClear:hover{background-color:rgba(54, 206, 54, 0.61);}
+
+  #buttonColoring{
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 3px;
+    background-color: rgb(30, 192, 30);
+    border: solid 2px rgb(30, 192, 30);
+    }
+    #buttonColoring:hover{  background-color: rgba(30, 192, 30, 0.61);}
+
+#buttonSpawnWater{
+  background-color: rgb(49, 160, 224);
+  border:solid 2px rgb(49, 160, 224);
+}
+#buttonSpawnWater:hover{background-color: rgb(49, 160, 224);}
+
+#buttonRemoveWater{
+  background-color: rgb(53, 134, 209);
+  border: solid 2px rgb(53,134,209);
+  color: white;
+}
+#buttonRemoveWater:hover{background-color:rgba(53, 136, 209, 0.61) }
+
+#buttonShowHideTable{
+  background-color: rgb(179, 47, 219);
+border: solid 2px rgb(179, 47, 219);
+margin-top: 10px;
+}
+
+#buttonShowHideTable:hover{background-color: rgba(179, 47, 219, 0.61)}
