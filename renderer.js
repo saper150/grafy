@@ -4,7 +4,11 @@ import { addWaterToWorld } from './particles'
 import { allahuAkbar } from "./allahu-akbar";
 import { htmlUtilis } from './htmlUtilis'
 import $ from 'jquery'
+<<<<<<< HEAD
 let app, renderer, stage,  particlesContainer, selectClickOption, background, backgroundEE
+=======
+let app, renderer, stage, meter, particlesContainer, selectClickOption, background
+>>>>>>> b91fa061c43994da3e27c99bad952dd86ae6124f
 let graphs = []
 app = new PIXI.Application
 renderer = PIXI.autoDetectRenderer(1000, 800)
@@ -90,11 +94,15 @@ function buttonsSetup() {
     $('#buttonDFScreate').click(spawnDFS)
     $('#buttonBFScreate').click(spawnBFS)
     $('#buttonGraphSearchClear').click(clearSearches)
+<<<<<<< HEAD
     $('#buttonGraphSearchClear').attr('disabled', true)
     $('#buttonColoring').click(graphColoring)
     $('#buttonDFScreate').attr('disabled', true)
     $('#buttonBFScreate').attr('disabled', true)
     $('#buttonColoring').attr('disabled', true)
+=======
+    $('#buttonColoring').click(graphColoring)
+>>>>>>> b91fa061c43994da3e27c99bad952dd86ae6124f
     
 }
 
@@ -117,10 +125,13 @@ function stageSetup() {
 function backgroundSetup(){
     background = makeSprite(renderer.width/100,renderer.height/100, 'assets/images/Space.jpg')
     stage.addChild(background)
+<<<<<<< HEAD
     backgroundEE = makeSprite(renderer.width/100,renderer.height/100, 'assets/images/ATH.png')
     backgroundEE.scale.y *= -1
     backgroundEE.alpha = 0;
     stage.addChild(backgroundEE)
+=======
+>>>>>>> b91fa061c43994da3e27c99bad952dd86ae6124f
 }
 
 function makeBlur(blurStr) {
@@ -144,20 +155,32 @@ function setup() {
     stage.addChild(WorldElement.container)
     $('#particleCount').text(`Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
 
+    let counter = 0
     //main loop
     app.ticker.add(function () {
+<<<<<<< HEAD
+=======
+        counter++
+        meter.tickStart()
+>>>>>>> b91fa061c43994da3e27c99bad952dd86ae6124f
         world.Step(1 / 60, 5, 5)
         particles()
         WorldElement.elements.forEach(we => we.display())
 
         graphs.forEach(g => g.tick())
+<<<<<<< HEAD
         backgroundManager();
+=======
+
+        background.alpha = map(Math.abs(world.gravity.x) + Math.abs(world.gravity.y), 0, 5,1,0)
+>>>>>>> b91fa061c43994da3e27c99bad952dd86ae6124f
         renderer.render(stage)
     })
 }
 function map(n, start1, stop1, start2, stop2) {
     return ((n - start1)/(stop1 - start1)) * (stop2 - start2) + start2;
 }
+<<<<<<< HEAD
 
 function backgroundManager(){
     background.alpha = map(Math.abs(world.gravity.x) + Math.abs(world.gravity.y), 0, 5,1,0)
@@ -168,6 +191,8 @@ function backgroundManager(){
     else
         backgroundEE.alpha = 0
 }
+=======
+>>>>>>> b91fa061c43994da3e27c99bad952dd86ae6124f
 
 function makeSprite(width, height, texturePath) {
     let sprite = new PIXI.Sprite(PIXI.Texture.fromImage(texturePath));
