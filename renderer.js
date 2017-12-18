@@ -1,15 +1,13 @@
 import 'pixi.js'
 import { WorldElement } from './worldElements'
 import { addWaterToWorld } from './particles'
-import { allahuAkbar } from "./allahu-akbar";
+import { allahuAkbar } from "./allahu-akbar"
 import { htmlUtilis } from './htmlUtilis'
+import { graphButtonsSetup, updateGraphs } from './graphManager'
 import $ from 'jquery'
-let app, renderer, stage,  particlesContainer, selectClickOption, background, backgroundEE
-let graphs = []
+let app, renderer, stage, particlesContainer, selectClickOption, background, backgroundEE
 app = new PIXI.Application
 renderer = PIXI.autoDetectRenderer(1000, 800)
-import { Graph } from "./graph";
-import { Sprite } from 'pixi.js';
 
 renderer.backgroundColor = 0x999999
 document.getElementById('canvas').appendChild(renderer.view)
@@ -20,89 +18,8 @@ let g_groundBody = null
 let mouseJoint = null
 
 
-function spawnGraph() {
-    destroyGraphs()
-    const vertices = parseInt($('#inputGraphVertices').val())
-    const prob = parseFloat($('#inputGraphProb').val())
-    const radius = parseFloat($('#inputGraphRadius').val())
-    const length = parseFloat($('#inputGraphLength').val())
-    let graph = Graph.random(vertices, prob, { createTable: true, buttonName: 'buttonShowHideTable', color: 0xff0000, radius: radius, length: length })
-    graphs.push(graph)
-    graphs.forEach(g => g.spawn())
-    $('#buttonDFScreate').attr('disabled', false)
-    $('#buttonBFScreate').attr('disabled', false)
-    $('#buttonColoring').attr('disabled', false)
-}
 
-function destroyGraphs() {
-    graphs.forEach(g => g.destroy())
-    graphs = []
 
-    $('#buttonDFScreate').attr('disabled', true)
-    $('#buttonBFScreate').attr('disabled', true)
-    $('#buttonColoring').attr('disabled', true)
-    $('#buttonGraphSearchClear').attr('disabled', true)
-}
-
-function spawnDFS(){
-    let dfs = graphs[0].DFS() 
-    graphs.push(dfs)
-    dfs.spawn()
-    $('#buttonDFScreate').attr('disabled', true)
-    $('#buttonGraphSearchClear').attr('disabled', false)
-    
-}
-
-function spawnBFS(){
-    let bfs = graphs[0].BFS() 
-    graphs.push(bfs)
-    bfs.spawn()
-    $('#buttonBFScreate').attr('disabled', true)
-    $('#buttonGraphSearchClear').attr('disabled', false)
-    
-}
-
-function clearSearches(){
-    $('#buttonDFScreate').attr('disabled', false)
-    $('#buttonBFScreate').attr('disabled', false)
-    $('#buttonColoring').attr('disabled', false)
-    $('#buttonGraphSearchClear').attr('disabled', true)
-    graphs.splice(1).forEach(g => g.destroy())
-}
-
-function removeWater(){
-    world.particleSystems[0].particleGroups.forEach(p => p.DestroyParticles())
-    particlesContainer.children.forEach(p => p.destroy(true))
-    for (let i = particlesContainer.children.length - 1; i >= 0; i--)
-        particlesContainer.removeChild(particlesContainer.children[i])
-    $('#particlesCount').text('Particles: 0')
-}
-
-function graphColoring(){
-    graphs[0].coloring()
-}
-
-function buttonsSetup() {
-    $('#buttonSpawnGraph').click(spawnGraph)
-    $('#buttonSpawnWater').click(spawnWater)
-    $('#buttonRemoveWater').click(removeWater)
-    $('#buttonDestroyGraph').click(destroyGraphs)
-    $('#buttonDFScreate').click(spawnDFS)
-    $('#buttonBFScreate').click(spawnBFS)
-    $('#buttonGraphSearchClear').click(clearSearches)
-    $('#buttonGraphSearchClear').attr('disabled', true)
-    $('#buttonColoring').click(graphColoring)
-    $('#buttonDFScreate').attr('disabled', true)
-    $('#buttonBFScreate').attr('disabled', true)
-    $('#buttonColoring').attr('disabled', true)
-    
-}
-
-function spawnWater() {
-    const count = addWaterToWorld({ x: 0, y: 1, width: 0.55, height: 1.5, count: 7 })
-    addNewParticlesToRender(count)
-    
-}
 
 function stageSetup() {
     stage = new PIXI.Container
@@ -114,10 +31,10 @@ function stageSetup() {
     stage.scale.set(100, -100)
 }
 
-function backgroundSetup(){
-    background = makeSprite(renderer.width/100,renderer.height/100, 'assets/images/Space.jpg')
+function backgroundSetup() {
+    background = makeSprite(renderer.width / 100, renderer.height / 100, 'assets/images/Space.jpg')
     stage.addChild(background)
-    backgroundEE = makeSprite(renderer.width/100,renderer.height/100, 'assets/images/ATH.png')
+    backgroundEE = makeSprite(renderer.width / 100, renderer.height / 100, 'assets/images/ATH.png')
     backgroundEE.scale.y *= -1
     backgroundEE.alpha = 0;
     stage.addChild(backgroundEE)
@@ -136,7 +53,8 @@ PIXI.loader
 
 function setup() {
     selectClickOption = htmlUtilis.setupSelectWithOptions({ name: 'selectClickOption', options: ['move', 'add water', 'kaboom'] })
-    buttonsSetup()
+    waterButtonsSetup()
+    graphButtonsSetup()
     stageSetup()
     backgroundSetup()
     particleSetup([makeBlur(3)])
@@ -149,20 +67,19 @@ function setup() {
         world.Step(1 / 60, 5, 5)
         particles()
         WorldElement.elements.forEach(we => we.display())
-
-        graphs.forEach(g => g.tick())
+        updateGraphs()
         backgroundManager();
         renderer.render(stage)
     })
 }
 function map(n, start1, stop1, start2, stop2) {
-    return ((n - start1)/(stop1 - start1)) * (stop2 - start2) + start2;
+    return ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
 }
 
-function backgroundManager(){
-    background.alpha = map(Math.abs(world.gravity.x) + Math.abs(world.gravity.y), 0, 5,1,0)
-    
-    if(Math.abs(world.gravity.x + world.gravity.y) === 69){
+function backgroundManager() {
+    background.alpha = map(Math.abs(world.gravity.x) + Math.abs(world.gravity.y), 0, 5, 1, 0)
+
+    if (Math.abs(world.gravity.x + world.gravity.y) === 69) {
         backgroundEE.alpha += 0.001
     }
     else
@@ -283,3 +200,21 @@ function addNewParticlesToRender(count) {
     $('#particlesCount').text(`Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
 }
 
+function removeWater() {
+    world.particleSystems[0].particleGroups.forEach(p => p.DestroyParticles())
+    particlesContainer.children.forEach(p => p.destroy(true))
+    for (let i = particlesContainer.children.length - 1; i >= 0; i--)
+        particlesContainer.removeChild(particlesContainer.children[i])
+    $('#particlesCount').text('Particles: 0')
+}
+
+
+function waterButtonsSetup() {
+    $('#buttonSpawnWater').click(spawnWater)
+    $('#buttonRemoveWater').click(removeWater)
+}
+
+function spawnWater() {
+    const count = addWaterToWorld({ x: 0, y: 1, width: 0.55, height: 1.5, count: 7 })
+    addNewParticlesToRender(count)
+}
