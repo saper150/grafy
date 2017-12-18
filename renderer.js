@@ -2,16 +2,9 @@ import 'pixi.js'
 import { WorldElement } from './worldElements'
 import { addWaterToWorld } from './particles'
 import { allahuAkbar } from "./allahu-akbar";
-import 'fpsmeter'
 import { htmlUtilis } from './htmlUtilis'
-<<<<<<< HEAD
-import * as $ from 'jquery'
-
-let app, renderer, stage, meter, particlesContainer, selectClickOption
-=======
 import $ from 'jquery'
-let app, renderer, stage, meter, particlesContainer, selectClickOption, background
->>>>>>> space background
+let app, renderer, stage,  particlesContainer, selectClickOption, background, backgroundEE
 let graphs = []
 app = new PIXI.Application
 renderer = PIXI.autoDetectRenderer(1000, 800)
@@ -22,7 +15,6 @@ renderer.backgroundColor = 0x999999
 document.getElementById('canvas').appendChild(renderer.view)
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('mouseup', onMouseUp)
-meter = new FPSMeter(document.getElementById('canvas'), { position: 'sticky', margin: 'inherit', width: 50, graph: 1, history: 20, heat: 1 })
 
 let g_groundBody = null
 let mouseJoint = null
@@ -49,6 +41,7 @@ function destroyGraphs() {
     $('#buttonDFScreate').attr('disabled', true)
     $('#buttonBFScreate').attr('disabled', true)
     $('#buttonColoring').attr('disabled', true)
+    $('#buttonGraphSearchClear').attr('disabled', true)
 }
 
 function spawnDFS(){
@@ -56,6 +49,8 @@ function spawnDFS(){
     graphs.push(dfs)
     dfs.spawn()
     $('#buttonDFScreate').attr('disabled', true)
+    $('#buttonGraphSearchClear').attr('disabled', false)
+    
 }
 
 function spawnBFS(){
@@ -63,12 +58,15 @@ function spawnBFS(){
     graphs.push(bfs)
     bfs.spawn()
     $('#buttonBFScreate').attr('disabled', true)
+    $('#buttonGraphSearchClear').attr('disabled', false)
+    
 }
 
 function clearSearches(){
     $('#buttonDFScreate').attr('disabled', false)
     $('#buttonBFScreate').attr('disabled', false)
     $('#buttonColoring').attr('disabled', false)
+    $('#buttonGraphSearchClear').attr('disabled', true)
     graphs.splice(1).forEach(g => g.destroy())
 }
 
@@ -92,7 +90,11 @@ function buttonsSetup() {
     $('#buttonDFScreate').click(spawnDFS)
     $('#buttonBFScreate').click(spawnBFS)
     $('#buttonGraphSearchClear').click(clearSearches)
+    $('#buttonGraphSearchClear').attr('disabled', true)
     $('#buttonColoring').click(graphColoring)
+    $('#buttonDFScreate').attr('disabled', true)
+    $('#buttonBFScreate').attr('disabled', true)
+    $('#buttonColoring').attr('disabled', true)
     
 }
 
@@ -115,6 +117,10 @@ function stageSetup() {
 function backgroundSetup(){
     background = makeSprite(renderer.width/100,renderer.height/100, 'assets/images/Space.jpg')
     stage.addChild(background)
+    backgroundEE = makeSprite(renderer.width/100,renderer.height/100, 'assets/images/ATH.png')
+    backgroundEE.scale.y *= -1
+    backgroundEE.alpha = 0;
+    stage.addChild(backgroundEE)
 }
 
 function makeBlur(blurStr) {
@@ -138,24 +144,29 @@ function setup() {
     stage.addChild(WorldElement.container)
     $('#particleCount').text(`Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
 
-    let counter = 0
     //main loop
     app.ticker.add(function () {
-        counter++
-        meter.tickStart()
         world.Step(1 / 60, 5, 5)
         particles()
         WorldElement.elements.forEach(we => we.display())
 
         graphs.forEach(g => g.tick())
-
-        background.alpha = map(Math.abs(world.gravity.x) + Math.abs(world.gravity.y), 0, 5,1,0)
+        backgroundManager();
         renderer.render(stage)
-        meter.tick()
     })
 }
 function map(n, start1, stop1, start2, stop2) {
     return ((n - start1)/(stop1 - start1)) * (stop2 - start2) + start2;
+}
+
+function backgroundManager(){
+    background.alpha = map(Math.abs(world.gravity.x) + Math.abs(world.gravity.y), 0, 5,1,0)
+    
+    if(Math.abs(world.gravity.x + world.gravity.y) === 69){
+        backgroundEE.alpha += 0.001
+    }
+    else
+        backgroundEE.alpha = 0
 }
 
 function makeSprite(width, height, texturePath) {

@@ -5,6 +5,10 @@ export function particleSystemSetup(settings) {
     const particleSystem = world.CreateParticleSystem(psd)
 }
 
+/**
+ * 
+ * @param {object} settings settings {width, height, x, y, count}
+ */
 export function addWaterToWorld(settings) {
     if (!settings.count)
         settings.count = 7
