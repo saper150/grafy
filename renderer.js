@@ -11,12 +11,14 @@ renderer = PIXI.autoDetectRenderer(1000, 800)
 
 renderer.backgroundColor = 0x999999
 document.getElementById('canvas').appendChild(renderer.view)
-document.addEventListener('keydown', onKeyDown);
+document.addEventListener('keydown', onKeyDown)
 document.addEventListener('mouseup', onMouseUp)
+if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', orientationHandle, false);  
+}
 
 let g_groundBody = null
 let mouseJoint = null
-
 
 
 
@@ -77,7 +79,7 @@ function map(n, start1, stop1, start2, stop2) {
 }
 
 function backgroundManager() {
-    background.alpha = map(Math.abs(world.gravity.x) + Math.abs(world.gravity.y), 0, 5, 1, 0)
+    background.alpha = map(Math.abs(world.gravity.x) + Math.abs(world.gravity.y), 0, 10, 1, 0)
 
     if (Math.abs(world.gravity.x + world.gravity.y) === 69) {
         backgroundEE.alpha += 0.001
@@ -158,6 +160,16 @@ function onKeyDown(key) {
         world.resetGravity()
     $('#gravity').text(`Gravity: ${world.gravity.x}, ${world.gravity.y}`)
 }
+
+function orientationHandle(event){
+    world.gravity.y = event.beta
+    world.gravity.x = event.gamma
+    let x = Math.round(map(event.gamma,-90,90,-30,30))
+    let y = -Math.round(map(event.beta,-90,90,-30,30))
+    world.changeGravity(x,y)
+    $('#gravity').text(`Gravity: ${world.gravity.x}, ${world.gravity.y}`)
+}
+
 
 function getMousePosition(mouse) {
     const pos = mouse.data.getLocalPosition(mouse.target)
