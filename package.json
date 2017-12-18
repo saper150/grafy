@@ -25,10 +25,12 @@
   "dependencies": {
     "bootstrap": "^4.0.0-beta.2",
     "css-loader": "^0.28.7",
+    "file-loader": "^1.1.6",
     "handsontable": "^0.34.5",
     "jquery": "^1.9.1",
     "pixi.js": "^4.6.0",
     "popper.js": "^1.12.7",
-    "style-loader": "^0.19.0"
+    "style-loader": "^0.19.0",
+    "url-loader": "^0.6.2"
   }
 }
