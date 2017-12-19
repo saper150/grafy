@@ -7,7 +7,7 @@
   font-family: 'Spectral SC', serif;
   padding-left: 10px;
   padding-right: 10px;
-   background-image: url("img/hexellence.png")
+  background: url("assets/images/hexellence.png"); 
 }
 
 .col{

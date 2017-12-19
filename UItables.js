@@ -48,6 +48,7 @@ export class GraphTable {
                 callback(query === 0 || query === 1)
             },
             allowInvalid: false,
+            fillHandle: false,
             type: 'numeric',
             cells: (row, col, prop) => {
                 let cellProperties = {}
