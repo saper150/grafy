@@ -11,7 +11,14 @@ function spawnGraph() {
     const prob = parseFloat($('#inputGraphProb').val())
     const radius = parseFloat($('#inputGraphRadius').val())
     const length = parseFloat($('#inputGraphLength').val())
-    let graph = Graph.random(vertices, prob, { createTable: true, buttonName: 'buttonShowHideTable', color: 0xff0000, radius: radius, length: length })
+    let graph = Graph.random(vertices, prob,
+        {
+            createTable: true,
+            buttonName: 'buttonShowHideTable',
+            color: 0xff0000,
+            radius: radius,
+            length: length
+        })
     graphs.push(graph)
     graphs.forEach(g => g.spawn())
     $('#buttonDFScreate').attr('disabled', false)

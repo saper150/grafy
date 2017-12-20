@@ -38,7 +38,6 @@ export class Graph {
             else
                 this.table.hideTable()
         }
-
         let connectivityDiv = document.getElementById('graphIsConnected')
         document.getElementById('buttonConnectivity').onclick = () => connectivityDiv.innerHTML = `is connected: <b>${this.isGraphConnected()}</b>`
     }

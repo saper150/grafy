@@ -1,38 +1,21 @@
 #canvas > canvas {
-  width:100%
+  width: 100%
 }
 
-.row{
-  height: 603;
+body{
   font-family: 'Spectral SC', serif;
-  padding-left: 10px;
-  padding-right: 10px;
   background: url("assets/images/hexellence.png"); 
 }
 
-.col{
-  margin-top: 15px;
-}
-
-.btn{
-  margin-left: 15px;
-  margin-right: 5px;
- 
-}
-
 #info{
-text-align: center;
+  text-align: center;
 }
 
 #connected{
-  margin-top: 20px;
-  margin-bottom: 15px;
   font-size: 20px;
   text-align: center;
-  font-family: 'Spectral SC', serif;
-  }
+}
 #buttonConnectivity{
-  padding: 15px 25px;
   font-size: 16px;
   text-align: center;
   cursor: pointer;
@@ -50,33 +33,21 @@ text-align: center;
   transform: translateY(4px);
 }
 
-  .legend{
-    margin-top: 20px;
-    text-indent: 30%;
-    margin-right: 10px;
-  }
+.form-control{
+  font-family: 'Roboto Condensed', sans-serif;
+}
 
-  #click_effect{
-    margin-top: 20px;
-    margin-right: 10px;
-  }
+#buttonSpawnGraph{
+  background-color: rgb(223, 156, 31);
+  border: solid 2px rgb(223, 156, 31);
+}
+#buttonSpawnGraph:hover{background-color: rgba(223, 156, 31, 0.616); }
 
-  .form-control{
-    font-family: 'Roboto Condensed', sans-serif;   
-  }
-
-
-  #buttonSpawnGraph{
-    background-color: rgb(223, 156, 31);
-    border: solid 2px rgb(223, 156, 31);
-  }
-  #buttonSpawnGraph:hover{background-color: rgba(223, 156, 31, 0.616); }
-
-  #buttonDestroyGraph{
-    background-color: rgb(223, 156, 31);
-    border: solid 2px rgb(223, 156, 31);
-  }
-  #buttonDestroyGraph:hover{background-color: rgba(223, 156, 31, 0.616); }
+#buttonDestroyGraph{
+  background-color: rgb(223, 156, 31);
+  border: solid 2px rgb(223, 156, 31);
+}
+#buttonDestroyGraph:hover{background-color: rgba(223, 156, 31, 0.616); }
 
 #buttonDFScreate{
   background-color: rgb(54, 206, 54);
@@ -98,14 +69,11 @@ text-align: center;
 }
 #buttonGraphSearchClear:hover{background-color:rgba(54, 206, 54, 0.61);}
 
-  #buttonColoring{
-    margin-left: 30%;
-    margin-right: 30%;
-    margin-top: 3px;
-    background-color: rgb(30, 192, 30);
-    border: solid 2px rgb(30, 192, 30);
-    }
-    #buttonColoring:hover{  background-color: rgba(30, 192, 30, 0.61);}
+#buttonColoring{
+  background-color: rgb(30, 192, 30);
+  border: solid 2px rgb(30, 192, 30);
+}
+#buttonColoring:hover{  background-color: rgba(30, 192, 30, 0.61);}
 
 #buttonSpawnWater{
   background-color: rgb(49, 160, 224);
@@ -122,7 +90,8 @@ text-align: center;
 
 #buttonShowHideTable{
   background-color: rgb(179, 47, 219);
-border: solid 2px rgb(179, 47, 219);
-margin-top: 10px;
+  border: solid 2px rgb(179, 47, 219);
 }
-#buttonShowHideTable:hover{background-color: rgba(179, 47, 219, 0.61)}
+#buttonShowHideTable:hover{
+  background-color: rgba(179, 47, 219, 0.61)
+}
