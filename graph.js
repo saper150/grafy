@@ -40,7 +40,7 @@ export class Graph {
         }
 
         let connectivityDiv = document.getElementById('graphIsConnected')
-        document.getElementById('buttonConnectivity').onclick = () => connectivityDiv.innerHTML = `is connected: ${this.isGraphConnected()}`
+        document.getElementById('buttonConnectivity').onclick = () => connectivityDiv.innerHTML = `is connected: <b>${this.isGraphConnected()}</b>`
     }
 
 

@@ -2,34 +2,24 @@
     
     <head>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="Stylesheet" type="text/css" href="style.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
-            crossorigin="anonymous">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
-            crossorigin="anonymous"></script>
+            <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">        
             <link href="https://fonts.googleapis.com/css?family=Spectral+SC" rel="stylesheet">
-            
     </head>
     
     <body>
-    
-    
-             </div>
             <div class="row">
                 <div class="col">
                     Graph vertices:
-                    <input id="inputGraphVertices" class="form-control" size="1" value="8" />
+                    <input id="inputGraphVertices" class="form-control" size="1" value="8" type="number" min="1"  />
                     <br> Edge probability:
-                    <input id="inputGraphProb" size="1" class="form-control" value="0.5" /> Vertex radius:
-                    <input id="inputGraphRadius" size="1" class="form-control" value="0.18" />
+                    <input id="inputGraphProb" size="1" class="form-control" value="0.5" type="number" min="0" max="1" step="0.05"/> Vertex radius:
+                    <input id="inputGraphRadius" size="1" class="form-control" value="0.18" type="number" min="0"/>
                     <br> Edge length:
-                    <input id="inputGraphLength" size="1" class="form-control" value="1" />
+                    <input id="inputGraphLength" size="1" class="form-control" value="1" type="number" min="0"  />
                     <br>
                     <button id="buttonSpawnGraph" class="btn btn-success">Spawn Graph</button>
                     <button id="buttonDestroyGraph" class="btn btn-danger">Destroy Graph</button>
                     <br><br>
-    
-    
                     <button id="buttonDFScreate" class="btn btn-info">DFS</button>
                     <button id="buttonBFScreate" class="btn btn-info">BFS</button>
                     <button id="buttonGraphSearchClear" class="btn btn-warning">Clear searches</button>
@@ -49,20 +39,26 @@
                                            
                         </div>
                         <div id="connected">
-                            <div id="graphIsConnected">is connected: ?</div>
+                            <div id="graphIsConnected">is connected:? </div>
                             <button id="buttonConnectivity">Check Connectivity</button>
                         </div>
                         <div id="click_effect"    >
                             Click effect:
                             <select id="selectClickOption" class="form-control"></select>
-                        
                     </div>
                   
                     <div class="legend">
-                        Legenda<br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut justo purus, tempor sit amet
-                        pulvinar id, porttitor quis dolor. Morbi mollis, lorem vel scelerisque interdum, odio ex tincidunt mauris,
-                        ac feugiat dui tellus sit amet ex. Suspendisse eros urna, ultrices condimentum auctor sit amet, vulputate
-                        a odio. 
+                        <b>Legend</b><br/> 
+                        Left Arrow - Gravity X += 1<br/>
+                        Right Arrow - Gravity X -= 1<br/>
+                        Up Arrow - Gravity Y += 1<br/>
+                        Down Arrow - Gravity Y -= 1<br/>
+                        Spacebar - Invert Gravity<br/>
+                        G - Reset Gravity (0,0)<br/>
+                        <b>Click Effects:</b><br/>
+                        move - drag mouse on vertices to move it<br/>
+                        add water - adds small amount of water<br/>
+                        kaboom - explosion
                     </div>
                 </div>
         </div>

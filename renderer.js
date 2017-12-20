@@ -1,100 +1,27 @@
 import 'pixi.js'
 import { WorldElement } from './worldElements'
 import { addWaterToWorld } from './particles'
-import { allahuAkbar } from "./allahu-akbar";
-import 'fpsmeter'
+import { allahuAkbar } from "./allahu-akbar"
 import { htmlUtilis } from './htmlUtilis'
-import * as $ from 'jquery'
-
-let app, renderer, stage, meter, particlesContainer, selectClickOption
-let graphs = []
+import { graphButtonsSetup, updateGraphs } from './graphManager'
+import $ from 'jquery'
+let app, renderer, stage, particlesContainer, selectClickOption, background, backgroundEE
 app = new PIXI.Application
 renderer = PIXI.autoDetectRenderer(1000, 800)
-import { Graph } from "./graph";
 
 renderer.backgroundColor = 0x999999
 document.getElementById('canvas').appendChild(renderer.view)
-document.addEventListener('keydown', onKeyDown);
+document.addEventListener('keydown', onKeyDown)
 document.addEventListener('mouseup', onMouseUp)
-meter = new FPSMeter(document.getElementById('canvas'), { position: 'sticky', margin: 'inherit', width: 50, graph: 1, history: 20, heat: 1 })
+if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', orientationHandle, false);  
+}
 
 let g_groundBody = null
 let mouseJoint = null
 
 
-function spawnGraph() {
-    destroyGraphs()
-    const vertices = parseInt($('#inputGraphVertices').val())
-    const prob = parseFloat($('#inputGraphProb').val())
-    const radius = parseFloat($('#inputGraphRadius').val())
-    const length = parseFloat($('#inputGraphLength').val())
-    let graph = Graph.random(vertices, prob, { createTable: true, buttonName: 'buttonShowHideTable', color: 0xff0000, radius: radius, length: length })
-    graphs.push(graph)
-    graphs.forEach(g => g.spawn())
-    $('#buttonDFScreate').attr('disabled', false)
-    $('#buttonBFScreate').attr('disabled', false)
-    $('#buttonColoring').attr('disabled', false)
-}
 
-function destroyGraphs() {
-    graphs.forEach(g => g.destroy())
-    graphs = []
-
-    $('#buttonDFScreate').attr('disabled', true)
-    $('#buttonBFScreate').attr('disabled', true)
-    $('#buttonColoring').attr('disabled', true)
-}
-
-function spawnDFS(){
-    let dfs = graphs[0].DFS() 
-    graphs.push(dfs)
-    dfs.spawn()
-    $('#buttonDFScreate').attr('disabled', true)
-}
-
-function spawnBFS(){
-    let bfs = graphs[0].BFS() 
-    graphs.push(bfs)
-    bfs.spawn()
-    $('#buttonBFScreate').attr('disabled', true)
-}
-
-function clearSearches(){
-    $('#buttonDFScreate').attr('disabled', false)
-    $('#buttonBFScreate').attr('disabled', false)
-    $('#buttonColoring').attr('disabled', false)
-    graphs.splice(1).forEach(g => g.destroy())
-}
-
-function removeWater(){
-    world.particleSystems[0].particleGroups.forEach(p => p.DestroyParticles())
-    particlesContainer.children.forEach(p => p.destroy(true))
-    // particlesContainer.children.forEach( p => particlesContainer.removeChild(p))
-    for (let i = particlesContainer.children.length - 1; i >= 0; i--)
-        particlesContainer.removeChild(particlesContainer.children[i])
-}
-
-function graphColoring(){
-    graphs[0].coloring()
-}
-
-function buttonsSetup() {
-    htmlUtilis.setupButtonWithClick({ name: 'buttonSpawnGraph', action: spawnGraph })
-    htmlUtilis.setupButtonWithClick({ name: 'buttonSpawnWater', action: spawnWater })
-    htmlUtilis.setupButtonWithClick({name: 'buttonRemoveWater', action: removeWater})
-    htmlUtilis.setupButtonWithClick({ name: 'buttonDestroyGraph', action: destroyGraphs })
-    htmlUtilis.setupButtonWithClick({name: 'buttonDFScreate', action: spawnDFS})
-    htmlUtilis.setupButtonWithClick({name: 'buttonBFScreate', action: spawnBFS})
-    htmlUtilis.setupButtonWithClick({name: 'buttonGraphSearchClear', action: clearSearches})
-    htmlUtilis.setupButtonWithClick({name: 'buttonColoring', action: graphColoring})
-    
-}
-
-function spawnWater() {
-    const count = addWaterToWorld({ x: 0, y: 1, width: 0.55, height: 1.5, count: 7 })
-    addNewParticlesToRender(count)
-    
-}
 
 function stageSetup() {
     stage = new PIXI.Container
@@ -106,6 +33,15 @@ function stageSetup() {
     stage.scale.set(100, -100)
 }
 
+function backgroundSetup() {
+    background = makeSprite(renderer.width / 100, renderer.height / 100, 'assets/images/Space.jpg')
+    stage.addChild(background)
+    backgroundEE = makeSprite(renderer.width / 100, renderer.height / 100, 'assets/images/ATH.png')
+    backgroundEE.scale.y *= -1
+    backgroundEE.alpha = 0;
+    stage.addChild(backgroundEE)
+}
+
 function makeBlur(blurStr) {
     let blurFilter = new PIXI.filters.BlurFilter
     blurFilter.blur = blurStr
@@ -114,40 +50,50 @@ function makeBlur(blurStr) {
 
 PIXI.loader
     .add('assets/images/Circle.png')
+    .add('assets/images/Space.jpg')
     .load(setup)
 
 function setup() {
     selectClickOption = htmlUtilis.setupSelectWithOptions({ name: 'selectClickOption', options: ['move', 'add water', 'kaboom'] })
-    buttonsSetup()
+    waterButtonsSetup()
+    graphButtonsSetup()
     stageSetup()
+    backgroundSetup()
     particleSetup([makeBlur(3)])
     g_groundBody = world.CreateBody(new b2BodyDef);
     stage.addChild(WorldElement.container)
-    htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
+    $('#particleCount').text(`Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
 
     //main loop
     app.ticker.add(function () {
-        meter.tickStart()
         world.Step(1 / 60, 5, 5)
         particles()
         WorldElement.elements.forEach(we => we.display())
-
-        graphs.forEach(g => g.tick())
-
+        updateGraphs()
+        backgroundManager();
         renderer.render(stage)
-        meter.tick()
     })
 }
+function map(n, start1, stop1, start2, stop2) {
+    return ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
+}
 
+function backgroundManager() {
+    background.alpha = map(Math.abs(world.gravity.x) + Math.abs(world.gravity.y), 0, 10, 1, 0)
 
+    if (Math.abs(world.gravity.x + world.gravity.y) === 69) {
+        backgroundEE.alpha += 0.001
+    }
+    else
+        backgroundEE.alpha = 0
+}
 
 function makeSprite(width, height, texturePath) {
     let sprite = new PIXI.Sprite(PIXI.Texture.fromImage(texturePath));
-    sprite.position.set(100, 100)
+    sprite.position.set(0, 0)
     sprite.width = width
     sprite.height = height
     sprite.anchor.set(0.5, 0.5)
-    sprite.tint = 0x666666
     return sprite
 }
 
@@ -212,8 +158,18 @@ function onKeyDown(key) {
     })
     if (key.code === 'KeyG')
         world.resetGravity()
-    htmlUtilis.setTextInDiv('gravity', `Gravity: ${world.gravity.x}, ${world.gravity.y}`)
+    $('#gravity').text(`Gravity: ${world.gravity.x}, ${world.gravity.y}`)
 }
+
+function orientationHandle(event){
+    world.gravity.y = event.beta
+    world.gravity.x = event.gamma
+    let x = Math.round(map(event.gamma,-90,90,-30,30))
+    let y = -Math.round(map(event.beta,-90,90,-30,30))
+    world.changeGravity(x,y)
+    $('#gravity').text(`Gravity: ${world.gravity.x}, ${world.gravity.y}`)
+}
+
 
 function getMousePosition(mouse) {
     const pos = mouse.data.getLocalPosition(mouse.target)
@@ -253,6 +209,24 @@ function addNewParticlesToRender(count) {
     for (var i = 0; i < count; i++) {
         particlesContainer.addChild(makeSprite(2 * radius, 2 * radius, 'assets/images/Circle.png'))
     }
-    htmlUtilis.setTextInDiv('particlesCount', `Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
+    $('#particlesCount').text(`Particles: ${world.particleSystems[0].GetParticleCount() / 2}`)
 }
 
+function removeWater() {
+    world.particleSystems[0].particleGroups.forEach(p => p.DestroyParticles())
+    particlesContainer.children.forEach(p => p.destroy(true))
+    for (let i = particlesContainer.children.length - 1; i >= 0; i--)
+        particlesContainer.removeChild(particlesContainer.children[i])
+    $('#particlesCount').text('Particles: 0')
+}
+
+
+function waterButtonsSetup() {
+    $('#buttonSpawnWater').click(spawnWater)
+    $('#buttonRemoveWater').click(removeWater)
+}
+
+function spawnWater() {
+    const count = addWaterToWorld({ x: 0, y: 1, width: 0.55, height: 1.5, count: 7 })
+    addNewParticlesToRender(count)
+}

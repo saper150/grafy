@@ -1,5 +1,6 @@
-import 'handsontable/dist/handsontable.full.css'
-import 'bootstrap/dist/css/bootstrap.css'
+import 'handsontable/dist/handsontable.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './style.css'
 import { Graph } from './graph'
 import { spawnWater, particleSystemSetup } from './particles'
 import { initializeWorld, worldBounds } from './worldUtilis'
