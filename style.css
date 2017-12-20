@@ -2,16 +2,21 @@
   width:100%
 }
 
+body{
+  background-image: url("assets/images/hexellence.png"); 
+  background-repeat: repeat;
+}
+
 .row{
-  height: 603;
+  height: auto;
   font-family: 'Spectral SC', serif;
   padding-left: 10px;
   padding-right: 10px;
-  background: url("assets/images/hexellence.png"); 
 }
 
 .col{
   margin-top: 15px;
+  height: auto;
 }
 
 .btn{
