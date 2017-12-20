@@ -24,6 +24,7 @@ function spawnGraph() {
     $('#buttonDFScreate').attr('disabled', false)
     $('#buttonBFScreate').attr('disabled', false)
     $('#buttonColoring').attr('disabled', false)
+    $('#buttonShowHideTable').attr('disabled', false)
 }
 
 function destroyGraphs() {
@@ -34,6 +35,8 @@ function destroyGraphs() {
     $('#buttonBFScreate').attr('disabled', true)
     $('#buttonColoring').attr('disabled', true)
     $('#buttonGraphSearchClear').attr('disabled', true)
+    $('#buttonShowHideTable').attr('disabled', true)
+    
 }
 
 function spawnDFS(){
